@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="UtilityNGPKG.Test/UtilityNGPKG.Test.csproj" Id="1a1e1902-4c7b-4dbc-bff2-cb02405b1758" />
   <Project Path="UtilityNGPKG/UtilityNGPKG.csproj" />
 </Solution>
