@@ -61,11 +61,11 @@ namespace UtilityNGPKG.Tokenomics
         /// <summary>
         /// Verifies HMAC-SHA256 signature for data authenticity
         /// </summary>
-        public (string error, bool isValid) VerifyHMACSHA256(string data, string signature, string key)
+        public (string error, bool isValid) VerifyHMACSHA256(string data, string expectedSignature, string key)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(data) || string.IsNullOrWhiteSpace(signature) || string.IsNullOrWhiteSpace(key))
+                if (string.IsNullOrWhiteSpace(data) || string.IsNullOrWhiteSpace(expectedSignature) || string.IsNullOrWhiteSpace(key))
                     return ("Invalid input parameters", false);
 
                 var (generatedSignature, success) = GenerateHMACSHA256(data, key);
@@ -73,7 +73,7 @@ namespace UtilityNGPKG.Tokenomics
                 if (!success)
                     return ("Failed to generate signature for verification", false);
 
-                var isValid = ConstantTimeComparison(signature, generatedSignature);
+                var isValid = ConstantTimeComparison(expectedSignature, generatedSignature);
 
                 if (!isValid)
                     return ("Signature verification failed", false);

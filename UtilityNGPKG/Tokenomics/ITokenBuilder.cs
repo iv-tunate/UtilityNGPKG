@@ -27,10 +27,10 @@ namespace UtilityNGPKG.Tokenomics
         /// Chec
         /// </summary>
         /// <param name="data">The base64-encoded string to decrypt. Must not be null or empty.</param>
-        /// <param name="signature">The expected HMACSHA256 signature to compare against the decrypted data. Must not be null or empty.</param>
+        /// <param name="expectedSignature">The expected HMACSHA256 signature to compare against the decrypted data. Must not be null or empty.</param>
         /// <param name="key">The secret key used for HMACSHA256 decryption. Must not be null or empty.</param>
         /// <returns>A string containing the decrypted plain text and true or false if the operation was successful. Returns null if decryption fails or the input is invalid.</returns>
-        (string error, bool isValid) VerifyHMACSHA256(string data, string signature, string key);
+        (string error, bool isValid) VerifyHMACSHA256(string data, string expectedSignature, string key);
 
         /// <summary>
         /// Encrypts the specified plain text using the AES symmetric encryption algorithm.

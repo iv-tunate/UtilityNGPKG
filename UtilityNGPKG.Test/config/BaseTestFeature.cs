@@ -13,7 +13,7 @@ using UtilityNGPKG.Tokenomics;
 
 namespace UtilityNGPKG.Test.config
 {
-    internal class BaseTestFeature
+    public class BaseTestFeature
     {
         protected readonly IPaystackService paystackService;
         protected readonly IMailService mailService;
