@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -80,6 +80,12 @@ namespace UtilityNGPKG.Tokenomics
         (string decryptedData, bool success) DecryptRSA(string encryptedText, RSAParameters privateKey);
 
         /// <summary>
+        /// Generates an RSA key pair, returning the private and public keys as RSAParameters.
+        /// </summary>
+        /// <returns>A tuple containing the private key and public key as RSAParameters.</returns>
+        (RSAParameters privateKey, RSAParameters publicKey) GenerateRSAParameters();
+
+        /// <summary>
         /// Generates a random alphanumeric token of the specified length. 
         /// </summary>
         /// <param name="length">The number of characters in the generated token. Must be a positive integer.</param>
@@ -97,11 +103,11 @@ namespace UtilityNGPKG.Tokenomics
         /// Generates a JSON Web Token (JWT) based on the specified request parameters.
         /// </summary>
         /// <param name="request">An object containing the parameters required to generate the JWT, such as user claims, expiration, and
-        /// signing credentials. Cannot be null.</param>
+        /// signing credentials. Cannot be null. Please note that the JWT Secret key on the JWT settings class <see cref="JwtSettings.SecretKey"/> must be a 64 byte (512bit) secret key string</param>
         /// <returns>A tuple containing the generated JWT as a string and a Boolean value indicating whether the token generation
         /// was successful. If token generation fails, the string will be empty and the Boolean will be <see
         /// langword="false"/>.</returns>
-        (string token, bool success) GenerateJWTToken(JwtTokenRequest request);
+        (string token, bool success) GenerateJWTToken(JwtSettings request);
 
         /// <summary>
         /// Compares two strings for equality using a constant-time algorithm to help prevent timing attacks.

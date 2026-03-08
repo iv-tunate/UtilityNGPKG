@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -69,7 +69,7 @@ namespace UtilityNGPKG.Tokenomics
                 if (string.IsNullOrWhiteSpace(plainText))
                     return (Array.Empty<byte>(), false);
 
-                using (var rsa = new RSACryptoServiceProvider(2048))
+                using (var rsa = RSA.Create())
                 {
                     rsa.ImportParameters(publicKey);
                     var plainBytes = Encoding.UTF8.GetBytes(plainText);
@@ -94,7 +94,7 @@ namespace UtilityNGPKG.Tokenomics
                 if (string.IsNullOrWhiteSpace(encryptedText))
                     return (string.Empty, false);
 
-                using (var rsa = new RSACryptoServiceProvider(2048))
+                using (var rsa = RSA.Create())
                 {
                     rsa.ImportParameters(privateKey);
                     var encryptedBytes = Convert.FromBase64String(encryptedText);
@@ -103,15 +103,30 @@ namespace UtilityNGPKG.Tokenomics
                     return (decryptedText, true);
                 }
             }
-            catch (FormatException ex)
-            {
-                logger.LogError(ex, "Invalid Base64 format in encrypted text");
-                return (string.Empty, false);
-            }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error decrypting RSA encrypted text");
                 return (string.Empty, false);
+            }
+        }
+
+        /// <summary>
+        /// Generates an RSA key pair, returning the private and public keys as RSAParameters.
+        /// </summary>
+        /// <returns>A tuple containing the private key and public key as RSAParameters.</returns>
+        public (RSAParameters privateKey, RSAParameters publicKey) GenerateRSAParameters()
+        {
+            try
+            {
+                using var rsa = new RSACryptoServiceProvider(2048);
+                var privateKey = rsa.ExportParameters(true);
+                var publicKey = rsa.ExportParameters(false);
+                return (privateKey, publicKey);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error generating RSA parameters");
+                return (default, default);
             }
         }
 
@@ -249,7 +264,7 @@ namespace UtilityNGPKG.Tokenomics
             }
         }
 
-        public (string token, bool success) GenerateJWTToken(JwtTokenRequest request)
+        public (string token, bool success) GenerateJWTToken(JwtSettings request)
         {
             try
             {

@@ -16,7 +16,7 @@ namespace UtilityNGPKG.Tokenomics
     /// an authentication service. It includes standard user identification fields as well as support for additional
     /// custom claims. All properties should be populated with valid values to ensure correct token
     /// generation.</remarks>
-    public class JwtTokenRequest
+    public class JwtSettings
     {
         /// <summary>
         /// Gets or sets the unique identifier for the user.
@@ -39,7 +39,8 @@ namespace UtilityNGPKG.Tokenomics
         /// </summary>
         public List<Claim>? CustomClaims { get; set; }
         /// <summary>
-        /// Gets or sets the secret key used for authentication or encryption purposes.
+        /// Gets or sets the secret key used for authentication or encryption purposes. Must be 512 bits or 64 bytes. 
+        /// You can make use of the generate random token method on the IToken builder to generate a 64 byte token but just passing in 64 as the length and retreiving the token as your secret <see cref="ITokenBuilder.GenerateRandomToken(uint)"/>
         /// </summary>
         public string SecretKey { get; set; }
         /// <summary>
