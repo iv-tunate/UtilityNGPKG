@@ -43,8 +43,8 @@ namespace UtilityNGPKG.Tokenomics
         /// be null.</param>
         /// <param name="iv">The initialization vector to use for encryption. Must be the correct length for the AES algorithm (typically
         /// 16 bytes). Cannot be null.</param>
-        /// <returns>A Base64-encoded string containing the encrypted representation of the input text and true or false indicating whether the operation was successful.</returns>
-        (string encryptedText, bool success) EncryptAES(string plainText, byte[] key, byte[] iv);
+        /// <returns>A Base64-encoded string containing the encrypted representation of the input text and true or false indicating whether the operation was successful along with the error message.</returns>
+        (string encryptedText, bool success, string errorMessage) EncryptAES(string plainText, byte[] key, byte[] iv);
 
         /// <summary>
         /// Decrypts the specified AES-encrypted text using the provided key and initialization vector (IV).
@@ -54,11 +54,11 @@ namespace UtilityNGPKG.Tokenomics
         /// thrown.</remarks>
         /// <param name="cipherText">The base64-encoded string containing the AES-encrypted data to decrypt. Cannot be null or empty.</param>
         /// <param name="key">The secret key used for AES decryption. Must be a valid length for the AES algorithm (typically 16, 24, or
-        /// 32 bytes... This method expects 32 bytes). Cannot be null.</param>
+        /// 32 bytes... This method expects at least 16 bytes). Cannot be null.</param>
         /// <param name="iv">The initialization vector (IV) used for AES decryption. Must be the correct length for the AES algorithm
         /// (typically 16 bytes). Cannot be null.</param>
-        /// <returns>The decrypted plain text as a string and .</returns>
-        (string decryptedText, bool succesful) DecryptAES(string cipherText, byte[] key, byte[] iv);
+        /// <returns>The decrypted plain text as a string and true or false statement indicating the success status of the operation along with an error message if any.</returns>
+        (string decryptedText, bool success, string errorMessage) DecryptAES(string cipherText, byte[] key, byte[] iv);
 
         /// <summary>
         /// Encrypts the specified plain text using RSA encryption with the provided public key.

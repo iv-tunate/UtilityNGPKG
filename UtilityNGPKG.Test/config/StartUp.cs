@@ -6,13 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace UtilityNGPKG.Test.config
 {
     internal class StartUp
     {
         private static IServiceProvider provider;
-        public StartUp()
+        static StartUp()
         {
             provider = Build();
         }
@@ -20,10 +21,14 @@ namespace UtilityNGPKG.Test.config
         {
             var services = new ServiceCollection();
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("config/testconfig.json", false, true)
                 .Build();
-
+            services.AddLogging(config =>
+            {
+                config.AddConsole();
+                config.SetMinimumLevel(LogLevel.Debug);
+            });
             services.AddUtilityNGPKG();
             return services.BuildServiceProvider();
         }

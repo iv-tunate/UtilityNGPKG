@@ -30,34 +30,6 @@ namespace UtilityNGPKG.Tokenomics
             this.logger = logger;
         }
 
-        public (string decryptedText, bool succesful) DecryptAES(string cipherText, byte[] key, byte[] iv)
-        {
-            try
-            {
-                if(string.IsNullOrWhiteSpace(cipherText) || key == null || iv == null)
-                    return (string.Empty, false);
-                else if (key.Length != 32 || iv.Length != 16)
-                    return (string.Empty, false);
-
-                using Aes aesAlgo = Aes.Create();
-                aesAlgo.Key = key;
-                aesAlgo.IV = iv;
-                aesAlgo.Mode = CipherMode.CBC;
-                aesAlgo.Padding = PaddingMode.PKCS7;
-
-                using var decryptor = aesAlgo.CreateDecryptor(aesAlgo.Key, aesAlgo.IV);
-                var cipherBytes = Convert.FromBase64String(cipherText);
-                var decryptedBytes = decryptor.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
-                var decryptedText = Encoding.UTF8.GetString(decryptedBytes);
-                return (decryptedText, true);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error decrypting AES cipher text");
-                return (string.Empty, false);
-            }
-        }
-
         /// <summary>
         /// Verifies HMAC-SHA256 signature for data authenticity
         /// </summary>
@@ -87,6 +59,30 @@ namespace UtilityNGPKG.Tokenomics
             }
         }
 
+        /// <summary>
+        /// Encrypts plain text using RSA public key
+        /// </summary>
+        public (byte[] encryptedData, bool success) EncryptRSA(string plainText, RSAParameters publicKey)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(plainText))
+                    return (Array.Empty<byte>(), false);
+
+                using (var rsa = new RSACryptoServiceProvider(2048))
+                {
+                    rsa.ImportParameters(publicKey);
+                    var plainBytes = Encoding.UTF8.GetBytes(plainText);
+                    var encryptedBytes = rsa.Encrypt(plainBytes, RSAEncryptionPadding.OaepSHA256);
+                    return (encryptedBytes, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error encrypting RSA plain text");
+                return (Array.Empty<byte>(), false);
+            }
+        }
 
         /// <summary>
         /// Decrypts RSA encrypted data using private key
@@ -122,17 +118,17 @@ namespace UtilityNGPKG.Tokenomics
         /// <summary>
         /// Encrypts plain text using AES-256-CBC
         /// </summary>
-        public (string encryptedText, bool success) EncryptAES(string plainText, byte[] key, byte[] iv)
+        public (string encryptedText, bool success, string errorMessage) EncryptAES(string plainText, byte[] key, byte[] iv)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(plainText) || key == null || iv == null)
-                    return (string.Empty, false);
+                    return (string.Empty, false, "invalid or an empty parameter was passed");
 
-                if (key.Length != 32 || iv.Length != 16)
+                if (key.Length < 16 || iv.Length != 16)
                 {
                     logger.LogWarning("Invalid AES key length ({KeyLength}) or IV length ({IVLength})", key.Length, iv.Length);
-                    return (string.Empty, false);
+                    return (string.Empty, false, "Invalid AES key length or IV length. At least 16 bytes is required for both the key and iv. The requires 16 bytes while the key can be more that 16 bytes but not less");
                 }
 
                 using (var aesAlgo = Aes.Create())
@@ -147,14 +143,42 @@ namespace UtilityNGPKG.Tokenomics
                         var plainBytes = Encoding.UTF8.GetBytes(plainText);
                         var encryptedBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
                         var encryptedText = Convert.ToBase64String(encryptedBytes);
-                        return (encryptedText, true);
+                        return (encryptedText, true, "");
                     }
                 }
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error encrypting AES plain text");
-                return (string.Empty, false);
+                return (string.Empty, false, $"An exception was thrown:\n{ex}");
+            }
+        }
+
+        public (string decryptedText, bool success, string errorMessage) DecryptAES(string cipherText, byte[] key, byte[] iv)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(cipherText) || key == null || iv == null)
+                    return (string.Empty, false, "invalid or an empty parameter was passed");
+                else if (key.Length < 16 || iv.Length != 16)
+                    return (string.Empty, false, "Invalid AES key length or IV length. At least 16 bytes is required for both the key and iv. The requires 16 bytes while the key can be more that 16 bytes but not less");
+
+                using Aes aesAlgo = Aes.Create();
+                aesAlgo.Key = key;
+                aesAlgo.IV = iv;
+                aesAlgo.Mode = CipherMode.CBC;
+                aesAlgo.Padding = PaddingMode.PKCS7;
+
+                using var decryptor = aesAlgo.CreateDecryptor(aesAlgo.Key, aesAlgo.IV);
+                var cipherBytes = Convert.FromBase64String(cipherText);
+                var decryptedBytes = decryptor.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
+                var decryptedText = Encoding.UTF8.GetString(decryptedBytes);
+                return (decryptedText, true, "");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error decrypting AES cipher text");
+                return (string.Empty, false, $"An exception was thrown:\n{ex}");
             }
         }
 
@@ -182,32 +206,6 @@ namespace UtilityNGPKG.Tokenomics
             {
                 logger.LogError(ex, "Error generating HMAC-SHA256 signature");
                 return (string.Empty, false);
-            }
-        }
-
-
-        /// <summary>
-        /// Encrypts plain text using RSA public key
-        /// </summary>
-        public (byte[] encryptedData, bool success) EncryptRSA(string plainText, RSAParameters publicKey)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(plainText))
-                    return (Array.Empty<byte>(), false);
-
-                using (var rsa = new RSACryptoServiceProvider(2048))
-                {
-                    rsa.ImportParameters(publicKey);
-                    var plainBytes = Encoding.UTF8.GetBytes(plainText);
-                    var encryptedBytes = rsa.Encrypt(plainBytes, RSAEncryptionPadding.OaepSHA256);
-                    return (encryptedBytes, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error encrypting RSA plain text");
-                return (Array.Empty<byte>(), false);
             }
         }
 

@@ -20,6 +20,7 @@ namespace UtilityNGPKG
     {
         public static IServiceCollection AddUtilityNGPKG(this IServiceCollection services)
         {
+            services.AddHttpClient();
             services.AddScoped<IApiIntegrationService, ExternalApiIntegration.IntegrationService>();
             services.AddScoped<IPaystackService, PaystackService>();
             services.AddScoped<IFileService, FileService>();
