@@ -7,6 +7,7 @@ using UtilityNGPKG.ExternalApiIntegration;
 using UtilityNGPKG.FilePost;
 using UtilityNGPKG.KYC;
 using UtilityNGPKG.Mailer;
+using UtilityNGPKG.Pagination;
 using UtilityNGPKG.PaymentGateway.Paystack;
 using UtilityNGPKG.Sanitizer;
 using UtilityNGPKG.Tokenomics;
@@ -22,6 +23,7 @@ namespace UtilityNGPKG.Test.config
         protected readonly IKycService kycService;
         protected readonly IFileService fileService;
         protected readonly IApiIntegrationService apiIntegrationService;
+        protected readonly IPaginationHelperFactory paginationHelperFactory;
 
         protected BaseTestFeature()
         {
@@ -32,6 +34,7 @@ namespace UtilityNGPKG.Test.config
             kycService = StartUp.Resolve<IKycService>();
             fileService = StartUp.Resolve<IFileService>();
             apiIntegrationService = StartUp.Resolve<IApiIntegrationService>();
+            paginationHelperFactory = StartUp.Resolve<IPaginationHelperFactory>();
         }
     }
 }

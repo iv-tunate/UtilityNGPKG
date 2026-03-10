@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace UtilityNGPKG
 {
@@ -25,13 +25,32 @@ namespace UtilityNGPKG
         private static readonly Regex _emailRegex = new Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", RegexOptions.Compiled);
     #endif
         /// <summary>
-        /// Regular expression for validating phone numbers (E.164 format).
+        /// Regular expression for validating international phone numbers.
         /// </summary>
+        /// <remarks>
+        /// This regex is based on a subset of the ITU-T E.164 standard, which is the most widely adopted
+        /// format for international phone numbers. It enforces the following rules:
+        /// <list type="bullet">
+        ///   <item><description>An optional leading <c>+</c> sign (for the country code prefix).</description></item>
+        ///   <item><description>The first digit must be 1–9 (leading zeros are not permitted).</description></item>
+        ///   <item><description>Total digits must be between 7 and 15, matching the E.164 min/max range.</description></item>
+        /// </list>
+        /// <para>
+        ///   <strong>What this covers:</strong> Most international mobile and landline numbers in standard
+        ///   formats, including Nigerian numbers (e.g. <c>+2348123456789</c>), US numbers (e.g. <c>+14155552671</c>),
+        ///   and local numbers provided without a country code.
+        /// </para>
+        /// <para>
+        ///   <strong>What this does NOT cover:</strong> Numbers with formatting characters like spaces,
+        ///   dashes, or parentheses (e.g. <c>(234) 812-3456</c>). Strip formatting before validating if needed.
+        ///   It also does not validate country-code-specific rules (e.g. some countries use numbers shorter than 7 digits).
+        /// </para>
+        /// </remarks>
     #if NET7_0_OR_GREATER
-        [GeneratedRegex(@"^\+?[1-9]\d{1,14}$")]
+        [GeneratedRegex(@"^\+?[1-9]\d{6,14}$")]
         private static partial Regex PhoneRegex();
     #else
-        private static readonly Regex _phoneRegex = new Regex(@"^\+?[1-9]\d{1,14}$", RegexOptions.Compiled);
+        private static readonly Regex _phoneRegex = new Regex(@"^\+?[1-9]\d{6,14}$", RegexOptions.Compiled);
     #endif
 
         /// <summary>
@@ -91,10 +110,16 @@ namespace UtilityNGPKG
         }
 
         /// <summary>
-        /// Validates that the provided phone number is exactly 11 digits.
+        /// Validates that the provided phone number conforms to a general international format.
         /// </summary>
-        /// <param name="phoneNumber">The phone number to validate.</param>
-        /// <returns><c>true</c> if the phone number is valid; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// Accepts an optional <c>+</c> prefix, requires the first digit to be 1–9, and enforces a total
+        /// digit count of 7–15 (aligned with the ITU-T E.164 standard). Numbers with formatting characters
+        /// such as spaces, dashes, or parentheses are not supported and must be stripped before calling this method.
+        /// This does not guarantee that the number is assigned or active — it only validates the format.
+        /// </remarks>
+        /// <param name="phoneNumber">The phone number to validate. Must consist of digits only, with an optional leading <c>+</c>.</param>
+        /// <returns><c>true</c> if the phone number matches the expected format; otherwise, <c>false</c>.</returns>
         public static bool IsValidPhoneNumber(string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber))
