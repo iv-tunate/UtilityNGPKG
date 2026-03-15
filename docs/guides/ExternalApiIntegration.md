@@ -1,4 +1,4 @@
-> **Version:** v1.0.0 &nbsp;|&nbsp; [Changelog](../../CHANGELOG.md)
+> **Version:** v1.0.0 &nbsp;|&nbsp; [Changelog](../CHANGELOG.md)
 
 # External API Integration
 

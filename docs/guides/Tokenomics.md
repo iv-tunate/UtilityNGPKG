@@ -1,4 +1,4 @@
-> **Version:** v1.0.0 &nbsp;|&nbsp; [Changelog](../../CHANGELOG.md)
+> **Version:** v1.0.0 &nbsp;|&nbsp; [Changelog](../CHANGELOG.md)
 
 # Tokenomics
 
@@ -6,7 +6,7 @@ The Tokenomics module is your toolkit for everything authentication and cryptogr
 
 ## How to Access
 
-Everything is exposed through the `ITokenBuilder` interface. Register it once in your DI setup (or use the package's built-in extension method — see [Getting Started](../../index.md)), and then inject it wherever you need it:
+Everything is exposed through the `ITokenBuilder` interface. Register it once in your DI setup (or use the package's built-in extension method — see [Getting Started](../index.md)), and then inject it wherever you need it:
 
 ```csharp
 // In Program.cs (already done if you called AddUtilityNGPKG)

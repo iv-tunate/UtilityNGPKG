@@ -25,7 +25,7 @@ Your Paystack secret key is passed directly into each method call rather than be
 
 > ⚠️ **Never hardcode your secret key in source code.** Store it in environment variables or your secrets vault.
 
-See also: [IPaystackService](./IPaystackService.md) for the full method reference.
+See also: [IPaystackService](./Paystack/IPaystackService.md) for the full method reference.
 
 ---
 

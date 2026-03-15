@@ -1,39 +1,41 @@
 - name: Home
   href: index.md
-- name: Getting Started
-  href: guides/RegexValidations.md
 - name: Guides
   items:
-    - name: External API Integration
+    - name: API Integration
       href: guides/ExternalApiIntegration.md
-    - name: File Upload (Cloudinary)
+    - name: File Upload 
       items:
         - name: Overview
           href: guides/FilePost/FilePost.md
-        - name: CloudinaryCredentials
-          href: guides/FilePost/Models/CloudinaryCredentials.md
-        - name: UploadRequestBody
-          href: guides/FilePost/Models/UploadRequestBody.md
-        - name: UploadResponse
-          href: guides/FilePost/Models/UploadResponse.md
-    - name: KYC (YouVerify)
+        - name: Cloudinary
+          items:
+            - name: CloudinaryCredentials
+              href: guides/FilePost/Models/CloudinaryCredentials.md
+            - name: UploadRequestBody
+              href: guides/FilePost/Models/UploadRequestBody.md
+            - name: UploadResponse
+              href: guides/FilePost/Models/UploadResponse.md
+    - name: KYC
       items:
         - name: Overview
           href: guides/KYC/KYC.md
-        - name: WebhookVerifier
-          href: guides/KYC/YouVerify/WebhookVerifier.md
-        - name: YouVerifyKycDto
-          href: guides/KYC/YouVerify/Models/YouVerifyKycDto.md
-        - name: DocumentType
-          href: guides/KYC/YouVerify/Models/DocumentType.md
-        - name: YouVerifyCredentials
-          href: guides/KYC/YouVerify/Models/YouVerifyCredentials.md
-        - name: YouVerifyResponse
-          href: guides/KYC/YouVerify/Models/YouVerifyResponse.md
-        - name: YouVerifyWebhookEvent
-          href: guides/KYC/YouVerify/Models/YouVerifyWebhookEvent.md
-        - name: YouVerifyErrorResponse
-          href: guides/KYC/YouVerify/Models/YouVerifyErrorResponse.md
+        - name: YouVerify
+          items:
+            - name: WebhookVerifier
+              href: guides/KYC/YouVerify/WebhookVerifier.md
+            - name: YouVerifyKycDto
+              href: guides/KYC/YouVerify/Models/YouVerifyKycDto.md
+            - name: DocumentType
+              href: guides/KYC/YouVerify/Models/DocumentType.md
+            - name: YouVerifyCredentials
+              href: guides/KYC/YouVerify/Models/YouVerifyCredentials.md
+            - name: YouVerifyResponse
+              href: guides/KYC/YouVerify/Models/YouVerifyResponse.md
+            - name: YouVerifyWebhookEvent
+              href: guides/KYC/YouVerify/Models/YouVerifyWebhookEvent.md
+            - name: YouVerifyErrorResponse
+              href: guides/KYC/YouVerify/Models/YouVerifyErrorResponse.md
     - name: Mailer
       items:
         - name: Overview
@@ -56,28 +58,30 @@
       items:
         - name: Overview
           href: guides/PaymentGateway/PaymentGateway.md
-        - name: IPaystackService Methods
-          href: guides/PaymentGateway/Paystack/IPaystackService.md
-        - name: PaystackWebhookVerifier
-          href: guides/PaymentGateway/Paystack/PaystackWebhookVerifier.md
-        - name: PaymentInitRequest
-          href: guides/PaymentGateway/Paystack/Models/PaymentInitRequest.md
-        - name: PaymentInitResponse
-          href: guides/PaymentGateway/Paystack/Models/PaymentInitResponse.md
-        - name: PaymentVerifyResponse
-          href: guides/PaymentGateway/Paystack/Models/PaymentVerifyResponse.md
-        - name: WithdrawalModels
-          href: guides/PaymentGateway/Paystack/Models/WithdrawalModels.md
-        - name: TransferRecipientModels
-          href: guides/PaymentGateway/Paystack/Models/TransferRecipientModels.md
-        - name: PaystackWebhookPayload
-          href: guides/PaymentGateway/Paystack/Models/PaystackWebhookPayload.md
-        - name: AccountResolveResponse
-          href: guides/PaymentGateway/Paystack/Models/AccountResolveResponse.md
-        - name: BankInfoResponse
-          href: guides/PaymentGateway/Paystack/Models/BankInfoResponse.md
-        - name: CreateRecipientResponse
-          href: guides/PaymentGateway/Paystack/Models/CreateRecipientResponse.md
+        - name: Paystack Payment Integration
+          items: 
+            - name: IPaystackService Methods
+              href: guides/PaymentGateway/Paystack/IPaystackService.md
+            - name: PaystackWebhookVerifier
+              href: guides/PaymentGateway/Paystack/PaystackWebhookVerifier.md
+            - name: PaymentInitRequest
+              href: guides/PaymentGateway/Paystack/Models/PaymentInitRequest.md
+            - name: PaymentInitResponse
+              href: guides/PaymentGateway/Paystack/Models/PaymentInitResponse.md
+            - name: PaymentVerifyResponse
+              href: guides/PaymentGateway/Paystack/Models/PaymentVerifyResponse.md
+            - name: WithdrawalModels
+              href: guides/PaymentGateway/Paystack/Models/WithdrawalModels.md
+            - name: TransferRecipientModels
+              href: guides/PaymentGateway/Paystack/Models/TransferRecipientModels.md
+            - name: PaystackWebhookPayload
+              href: guides/PaymentGateway/Paystack/Models/PaystackWebhookPayload.md
+            - name: AccountResolveResponse
+              href: guides/PaymentGateway/Paystack/Models/AccountResolveResponse.md
+            - name: BankInfoResponse
+              href: guides/PaymentGateway/Paystack/Models/BankInfoResponse.md
+            - name: CreateRecipientResponse
+              href: guides/PaymentGateway/Paystack/Models/CreateRecipientResponse.md
 
     - name: Sanitizer
       href: guides/Sanitizer.md
@@ -94,6 +98,4 @@
     - name: Issues
       href: contributing/issues.md
 - name: Security
-  href: ../SECURITY.md
-- name: API Reference
-  href: api/
+  href: SECURITY.md

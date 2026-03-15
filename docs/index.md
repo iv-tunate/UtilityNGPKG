@@ -6,15 +6,29 @@ title: Home
 
 Welcome to the official documentation for **UtilityNGPKG**, a collection of ready-to-use .NET service integrations for common backend tasks — from sending emails and verifying identities, to processing payments and generating JWT tokens.
 
-## Getting Started
+## Getting Started — AddUtilityNGPKG
 
-Add the package to your project and register all services in one line:
+The ideal way to register all services available on this package is the `AddUtilityNGPKG` extension method. Call it once in your `Program.cs`:
 
 ```csharp
 builder.Services.AddUtilityNGPKG();
 ```
 
-See the [Getting Started guide](guides/General/GeneralUtilities.md) for the full service registration table and notes on configuration.
+This registers the following services automatically:
+
+| Interface                  | Implementation            | Lifetime  |
+| -------------------------- | ------------------------- | --------- |
+| `IApiIntegrationService`   | `IntegrationService`      | Scoped    |
+| `IPaystackService`         | `PaystackService`         | Scoped    |
+| `IFileService`             | `FileService`             | Scoped    |
+| `IKycService`              | `KycService`              | Scoped    |
+| `IPaginationHelperFactory` | `PaginationHelperFactory` | Singleton |
+| `ITokenBuilder`            | `TokenBuilder`            | Singleton |
+| `IMailService`             | `MailService`             | Singleton |
+| `ISanitizationService`     | `SanitizationService`     | Singleton |
+
+It also calls `services.AddHttpClient()` internally, so you might not need to register that separately.
+---
 
 ## Available Modules
 

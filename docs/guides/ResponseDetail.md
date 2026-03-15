@@ -1,8 +1,8 @@
-> **Version:** v1.0.0 &nbsp;|&nbsp; [Changelog](../../CHANGELOG.md)
+> **Version:** v1.0.0 &nbsp;|&nbsp; [Changelog](../CHANGELOG.md)
 
 # ResponseDetail
 
-`ResponseDetail<T>` is a generic response wrapper used throughout the package — most service methods return it so you always have a consistent structure to handle, regardless of whether an operation succeeded or failed.
+`ResponseDetail<T>` is a generic response wrapper that can be used by almost any service methods or controller. This way, you always have a consistent structure to handle, regardless of whether an operation succeeded or failed.
 
 ## What It Looks Like
 

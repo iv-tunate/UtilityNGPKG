@@ -1,35 +1,5 @@
-> **Version:** v1.0.0 &nbsp;|&nbsp; [Changelog](../../CHANGELOG.md)
+> **Version:** v1.0.0 &nbsp;|&nbsp; [Changelog](../CHANGELOG.md)
 
-# General Utilities
-
-This page documents two standalone utilities available in the package root — `RegexValidations` for input validation, and `Services` (the DI extension method) for wiring everything up.
-
----
-
-## Getting Started — AddUtilityNGPKG
-
-The fastest way to register all services from this package is the `AddUtilityNGPKG` extension method. Call it once in your `Program.cs`:
-
-```csharp
-builder.Services.AddUtilityNGPKG();
-```
-
-This registers the following services automatically:
-
-| Interface                  | Implementation            | Lifetime  |
-| -------------------------- | ------------------------- | --------- |
-| `IApiIntegrationService`   | `IntegrationService`      | Scoped    |
-| `IPaystackService`         | `PaystackService`         | Scoped    |
-| `IFileService`             | `FileService`             | Scoped    |
-| `IKycService`              | `KycService`              | Scoped    |
-| `IPaginationHelperFactory` | `PaginationHelperFactory` | Singleton |
-| `ITokenBuilder`            | `TokenBuilder`            | Singleton |
-| `IMailService`             | `MailService`             | Singleton |
-| `ISanitizationService`     | `SanitizationService`     | Singleton |
-
-It also calls `services.AddHttpClient()` internally, so you don't need to register that separately.
-
----
 
 ## RegexValidations
 
