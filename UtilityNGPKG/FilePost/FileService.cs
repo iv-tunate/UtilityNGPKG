@@ -1,7 +1,4 @@
-﻿using AngleSharp.Io;
-using AngleSharp.Text;
-using BCrypt.Net;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;

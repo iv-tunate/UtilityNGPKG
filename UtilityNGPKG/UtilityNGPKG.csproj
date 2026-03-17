@@ -10,6 +10,7 @@
     <Compile Remove="Tokenomics\NewFolder\**" />
     <EmbeddedResource Remove="Tokenomics\NewFolder\**" />
     <None Remove="Tokenomics\NewFolder\**" />
+    <PackageReference Include="AngleSharp" Version="0.17.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
     <PackageReference Include="Isopoh.Cryptography.Argon2" Version="2.0.0" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
@@ -19,5 +20,6 @@
 	<PackageReference Include="CloudinaryDotNet" Version="1.27.9" />
 	<PackageReference Include="Paystack.Net" Version="1.1.3" />
 	<PackageReference Include="PdfPig" Version="0.1.13" />
+	<PackageReference Include="System.Text.Json" Version="6.0.11" />
   </ItemGroup>
 </Project>
