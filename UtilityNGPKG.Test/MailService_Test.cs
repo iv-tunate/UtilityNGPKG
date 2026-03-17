@@ -11,7 +11,7 @@ namespace UtilityNGPKG.Test
     public class MailService_Test : BaseTestFeature
     {
         #region MailTrap
-        [Fact]
+      //  [Fact]
         //public async Task SendMail_MailTrap()
         //{
         //    var receiver = "fortunateomonuwa@outlook.com";
