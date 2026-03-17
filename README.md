@@ -1,6 +1,6 @@
 # UtilityNGPKG
 
-A comprehensive .NET 6 and 8 utility NuGet package that simplifies common application integrations. It provides ready-to-use services for Payment Gateways (Paystack), File Uploads (Cloudinary), Mail Sending (SendGrid), KYC Integration (YouVerify), Tokenomics/JWT handling, Pagination, Regex Validations, and Input Sanitization.
+A comprehensive utility NuGet package that simplifies common application integrations. It provides ready-to-use services for Payment Gateways, File Uploads, Mail Sending, KYC Integration, Tokenomics/JWT handling, Pagination, Regex Validations, and Input Sanitization.
 
 ## Features
 
