@@ -1,14 +1,12 @@
-﻿using System;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UtilityNGPKG.Mailer
 {
     /// <summary>
     /// Provides methods and properties for constructing and managing email notification messages, including templates
-    /// for registration, login, password reset, and account status notifications.
+    /// for registration, login, password reset, account status notifications, etc.
     /// </summary>
     /// <remarks>This class is intended for internal use to generate standardized email content for various
     /// user account events. It centralizes the creation of email subjects and HTML-formatted bodies to ensure
@@ -48,12 +46,13 @@ namespace UtilityNGPKG.Mailer
         public DateTime SentDate { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MailNotifications"/> class with the specified parameters.
+        /// Initializes a new instance of the <see cref="NotificationMessages"/> class with the specified parameters.
         /// </summary>
         /// <param name="subject">The subject of the email.</param>
         /// <param name="body">The body content of the email.</param>
         /// <param name="recipientEmail">The recipient's email address.</param>
         /// <param name="senderEmail">The sender's email address.</param>
+        /// <param name="senderName">The sender's name.</param>
         public NotificationMessages(string subject, string body, string recipientEmail, string senderEmail, string senderName)
         {
             Subject = subject;
@@ -69,9 +68,9 @@ namespace UtilityNGPKG.Mailer
         /// </summary>
         /// <param name="name">The name of the recipient to personalize the email.</param>
         /// <param name="bodyContent">The actual content to insert into the email body.</param>
-        /// <param name="extraDetail">Any additional details to include in the email header, such as a motto, subtitle or context </param>
         /// <param name="senderMail">The email address of the sender to include in the contact information section.</param>
         /// <param name="senderName">The display name of the sender to include in the email header and contact information.</param>
+        /// <param name="extraDetail">Any additional details to include in the email header, such as a motto, subtitle or context </param>
         /// <returns>An HTML-formatted string representing the full email template.</returns>
         private static string BaseEmailTemplate(string name = "", string bodyContent = "", string senderMail = "", string senderName = "", string extraDetail="")
         {
@@ -178,14 +177,16 @@ namespace UtilityNGPKG.Mailer
         }
 
         /// <summary>
-        /// Constructs a registration confirmation email with token for account verification. Y
+        /// Constructs a registration confirmation email with token for account verification.
         /// </summary>
         /// <param name="receiver">The email address of the recipient.</param>
+        /// <param name="token">The account verification token.</param>
+        /// <param name="senderName">The name of the sender or platform to personalize the email.</param>
+        /// <param name="senderEmail">The sender's email address.</param>
         /// <param name="name">The recipient's name. It defaults to an empty string if no value is passed</param>
-        /// <param name="token">The account verification token.</param>\
-        /// <param name="senderName">The name of the sender or platform to personalize the email. This should be the name of the platform a user has registered on to avoid any confusion</param>
+        /// <param name="attachments">Optional list of file attachments.</param>
         /// <returns>A populated <see cref="MailRequestDTO"/> ready to be sent.</returns>
-        public static MailResponseDTO RegistrationConfirmationMailNotification(string receiver, string token, string senderName, string name = " ")
+        public static MailRequestDTO RegistrationConfirmationMailNotification(string receiver, string token, string senderName, string senderEmail, string name = " ", List<IFormFile>? attachments = null)
         {
             var subject = string.IsNullOrWhiteSpace(senderName) ? "WELCOME" : $"WELCOME TO {senderName.ToUpper()}";
             var body = $@"
@@ -193,12 +194,15 @@ namespace UtilityNGPKG.Mailer
             <p>Thank you for joining <b className=""sender"">{senderName}!!!</b></p>
             <p>Please verify your account with this token <b classNamw=""sender"">{token.ToUpper()}</b></p>
             <p>It expires in 5 mins";
-            return new MailResponseDTO
+            return new MailRequestDTO
             {
                 ReceiverName = name,
                 Receiver = receiver,
+                Sender = senderEmail,
+                SenderName = senderName,
                 Subject = subject,
-                Body = BaseEmailTemplate(name, body),
+                Body = BaseEmailTemplate(name, body, senderEmail, senderName),
+                Attachments = attachments
             };
         }
 
@@ -211,8 +215,11 @@ namespace UtilityNGPKG.Mailer
         /// <param name="device">The device used to attempt login.</param>
         /// <param name="ip">The IP address of the login attempt.</param>
         /// <param name="country">The country location of the IP address.</param>
+        /// <param name="senderName">The name of the sender or platform to personalize the email.</param>
+        /// <param name="senderEmail">The sender's email address.</param>
+        /// <param name="attachments">Optional list of file attachments.</param>
         /// <returns>A populated <see cref="MailRequestDTO"/> ready to be sent.</returns>
-        public static MailResponseDTO LoginNotification(string receiver, string name, string token, string device, string ip, string country)
+        public static MailRequestDTO LoginNotification(string receiver, string name, string token, string device, string ip, string country, string senderName, string senderEmail, List<IFormFile>? attachments = null)
         {
             var subject = "🔐 Login Notification";
 
@@ -240,11 +247,15 @@ namespace UtilityNGPKG.Mailer
                 <p style='color:gray; font-size:0.9em;'>This is an automated message. Please do not reply directly to this email.</p>
             ";
 
-            return new MailResponseDTO
+            return new MailRequestDTO
             {
+                ReceiverName = name,
                 Receiver = receiver,
+                Sender = senderEmail,
+                SenderName = senderName,
                 Subject = subject,
-                Body = body
+                Body = BaseEmailTemplate(name, body, senderEmail, senderName),
+                Attachments = attachments
             };
         }
 
@@ -253,18 +264,25 @@ namespace UtilityNGPKG.Mailer
         /// </summary>
         /// <param name="receiver">The email address of the recipient.</param>
         /// <param name="name">The name of the recipient.</param>
+        /// <param name="senderName">The name of the sender or platform to personalize the email.</param>
+        /// <param name="senderEmail">The sender's email address.</param>
+        /// <param name="attachments">Optional list of file attachments.</param>
         /// <returns>A populated <see cref="MailRequestDTO"/> ready to be sent.</returns>
-        public static MailResponseDTO EmailVerifiedNotification(string receiver, string name)
+        public static MailRequestDTO EmailVerifiedNotification(string receiver, string name, string senderName, string senderEmail, List<IFormFile>? attachments = null)
         {
             var subject = "EMAIL VERIFIED";
             var body = $@"
             <br/>
             <p>Congratulations {name}, your email has been successfully verified.</p>";
-            return new MailResponseDTO
+            return new MailRequestDTO
             {
+                ReceiverName = name,
                 Receiver = receiver,
+                Sender = senderEmail,
+                SenderName = senderName,
                 Subject = subject,
-                Body = BaseEmailTemplate(name, body),
+                Body = BaseEmailTemplate(name, body, senderEmail, senderName),
+                Attachments = attachments
             };
         }
 
@@ -273,29 +291,39 @@ namespace UtilityNGPKG.Mailer
         /// </summary>
         /// <param name="receiver">The email address of the recipient.</param>
         /// <param name="name">The name of the recipient.</param>
+        /// <param name="senderName">The name of the sender or platform to personalize the email.</param>
+        /// <param name="senderEmail">The sender's email address.</param>
+        /// <param name="attachments">Optional list of file attachments.</param>
         /// <returns>A populated <see cref="MailRequestDTO"/> ready to be sent.</returns>
-        public static MailResponseDTO AccountVerificationSuccessNotification(string receiver, string name)
+        public static MailRequestDTO AccountVerificationSuccessNotification(string receiver, string name, string senderName, string senderEmail, List<IFormFile>? attachments = null)
         {
             var subject = "ACCOUNT VERIFICATION SUCCESSFUL";
             var body = $@"
             <br/>
             <p>Congratulations {name}, your account has been successfully verified.</p>";
-            return new MailResponseDTO
+            return new MailRequestDTO
             {
+                ReceiverName = name,
                 Receiver = receiver,
+                Sender = senderEmail,
+                SenderName = senderName,
                 Subject = subject,
-                Body = BaseEmailTemplate(name, body),
+                Body = BaseEmailTemplate(name, body, senderEmail, senderName),
+                Attachments = attachments
             };
         }
 
         /// <summary>
         /// Constructs a password reset notification email with a reset token.
         /// </summary>
-        /// <param name="receiver"></param>
-        /// <param name="name"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public static MailResponseDTO PasswordResetNotification(string receiver, string name, string token)
+        /// <param name="receiver">The email address of the recipient.</param>
+        /// <param name="name">The name of the recipient.</param>
+        /// <param name="token">The reset token.</param>
+        /// <param name="senderName">The name of the sender or platform to personalize the email.</param>
+        /// <param name="senderEmail">The sender's email address.</param>
+        /// <param name="attachments">Optional list of file attachments.</param>
+        /// <returns>A populated <see cref="MailRequestDTO"/> ready to be sent.</returns>
+        public static MailRequestDTO PasswordResetNotification(string receiver, string name, string token, string senderName, string senderEmail, List<IFormFile>? attachments = null)
         {
             var subject = "PASSWORD RESET REQUEST";
             var body = $@"
@@ -306,23 +334,29 @@ namespace UtilityNGPKG.Mailer
             <p style='margin-top:-10px;'>This token will expire in <strong>10 minutes</strong>.</p>
             <br/>
             <p>If you did not request a password reset, please ignore this email or contact our support team.</p>";
-            return new MailResponseDTO
+            return new MailRequestDTO
             {
+                ReceiverName = name,
                 Receiver = receiver,
+                Sender = senderEmail,
+                SenderName = senderName,
                 Subject = subject,
-                Body = BaseEmailTemplate(name, body),
+                Body = BaseEmailTemplate(name, body, senderEmail, senderName),
+                Attachments = attachments
             };
         }
 
         /// <summary>
-        /// Constructs a password reset email with token for password recovery.
+        /// Constructs a password reset email with token for password recovery (detailed variant).
         /// </summary>
         /// <param name="receiver">The email address of the recipient.</param>
         /// <param name="name">The name of the recipient.</param>
         /// <param name="token">The password reset token.</param>
         /// <param name="senderName">The name of the sender or platform to personalize the email.</param>
+        /// <param name="senderEmail">The sender's email address.</param>
+        /// <param name="attachments">Optional list of file attachments.</param>
         /// <returns>A populated <see cref="MailRequestDTO"/> ready to be sent.</returns>
-        public static MailResponseDTO PasswordResetMailNotification(string receiver, string name, string token, string senderName)
+        public static MailRequestDTO PasswordResetMailNotification(string receiver, string name, string token, string senderName, string senderEmail, List<IFormFile>? attachments = null)
         {
             var subject = "🔑 Password Reset Request";
 
@@ -351,12 +385,15 @@ namespace UtilityNGPKG.Mailer
                 <p style='color:gray; font-size:0.9em;'>This is an automated message. Please do not reply directly to this email.</p>
             ";
 
-            return new MailResponseDTO
+            return new MailRequestDTO   
             {
                 Receiver = receiver,
                 ReceiverName = name,
+                Sender = senderEmail,
+                SenderName = senderName,
                 Subject = subject,
-                Body = BaseEmailTemplate(name, body)
+                Body = BaseEmailTemplate(name, body, senderEmail, senderName),
+                Attachments = attachments
             };
         }
 
@@ -368,8 +405,9 @@ namespace UtilityNGPKG.Mailer
         /// <param name="reason">The reason for blacklisting.</param>
         /// <param name="senderName">The name of the sender or platform to personalize the email.</param>
         /// <param name="senderEmail">The email address of the sender to include in the contact information section.</param>
+        /// <param name="attachments">Optional list of file attachments.</param>
         /// <returns>A populated <see cref="MailRequestDTO"/> ready to be sent.</returns>
-        public static MailResponseDTO BlacklistNotification(string receiver, string name, string reason, string senderName, string senderEmail)
+        public static MailRequestDTO BlacklistNotification(string receiver, string name, string reason, string senderName, string senderEmail, List<IFormFile>? attachments = null)
         {
             var subject = $"⚠️ Account Restricted - {senderName} Platform";
             var body = $@"
@@ -382,12 +420,15 @@ namespace UtilityNGPKG.Mailer
             </div>
             <p>If you believe this is a mistake, please contact our support team at {senderEmail} for further clarification.</p>";
 
-            return new MailResponseDTO
+            return new MailRequestDTO
             {
                 Receiver = receiver,
                 ReceiverName = name,
+                Sender = senderEmail,
+                SenderName = senderName,
                 Subject = subject,
-                Body = BaseEmailTemplate(name, body)
+                Body = BaseEmailTemplate(name, body, senderEmail, senderName),
+                Attachments = attachments
             };
         }
     }

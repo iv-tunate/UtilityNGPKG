@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace UtilityNGPKG.Mailer
 {
     /// <summary>
-    /// Represents the details required to send an email message.
+    /// Represents the details required to send an email message. 
+    /// See <see cref="NotificationMessages"/> for pre-built email templates that automatically return a populated instance of this class.
     /// </summary>
     public class MailRequestDTO
     {

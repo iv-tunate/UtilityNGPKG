@@ -2,32 +2,24 @@
 
 # NotificationMessages
 
-The `NotificationMessages` class provides static factory methods for generating styled, HTML-formatted email content. Instead of writing raw HTML strings in your services, you pass the required dynamic data to these methods, and they return a fully populated `MailResponseDTO`.
+The `NotificationMessages` class provides static factory methods for generating styled, HTML-formatted email content. Instead of writing raw HTML strings in your services, you pass the required dynamic data to these methods, and they return a fully populated `MailRequestDTO` ready to be dispatched.
 
-This ensures all emails sent from your application follow a consistent brand style and include necessary standard footers (like support contact info and automated message disclaimers).
+This ensures all emails sent from your application follow a consistent brand style, include necessary standard footers (like support contact info and automated message disclaimers), and correctly bind the sender and attachment information.
 
 ## How to Use
 
-Generate the content using one of the factory methods, then map it into a `MailRequestDTO` to send via `IMailService`.
+Generate the payload using one of the factory methods, and immediately pass the resulting `MailRequestDTO` to `IMailService`.
 
 ```csharp
-var content = NotificationMessages.RegistrationConfirmationMailNotification(
+var request = NotificationMessages.RegistrationConfirmationMailNotification(
     receiver: "user@example.com",
     token: "ABCDEFGHI",
     senderName: "My Awesome App",
+    senderEmail: "noreply@myawesomeapp.com",
     name: "John Doe" // optional
 );
 
-var request = new MailRequestDTO
-{
-    Sender = "noreply@myapp.com",
-    SenderName = content.SenderName,
-    Receiver = content.Receiver,
-    ReceiverName = content.ReceiverName,
-    Subject = content.Subject,
-    Body = content.Body
-};
-
+// The returned request already has Sender, SenderName, Subject, and Body fully populated!
 await _mailer.SendMail_Sendgrid(request, apiKey);
 ```
 
@@ -44,7 +36,9 @@ Sends a welcome email containing a verification token (e.g. for validating their
 - `receiver` (string): Recipient's email address
 - `token` (string): The verification code
 - `senderName` (string): Your app/platform name
+- `senderEmail` (string): The verified email address the message is sent from
 - `name` (string, optional): User's first name
+- `attachments` (List<IFormFile>, optional): Optional files to attach
 
 ---
 
@@ -60,6 +54,9 @@ Sends a security alert email when a login attempt is detected. Includes device i
 - `device` (string): E.g., `"Chrome / Windows"`
 - `ip` (string): E.g., `"102.34.67.88"`
 - `country` (string)
+- `senderName` (string)
+- `senderEmail` (string)
+- `attachments` (List<IFormFile>, optional)
 
 ---
 
@@ -71,6 +68,9 @@ A simple confirmation email telling the user their email address has been succes
 
 - `receiver` (string)
 - `name` (string)
+- `senderName` (string)
+- `senderEmail` (string)
+- `attachments` (List<IFormFile>, optional)
 
 ---
 
@@ -82,6 +82,9 @@ Similar to above, but explicitly states their "account" was verified (useful if 
 
 - `receiver` (string)
 - `name` (string)
+- `senderName` (string)
+- `senderEmail` (string)
+- `attachments` (List<IFormFile>, optional)
 
 ---
 
@@ -94,6 +97,9 @@ Standard password reset request email containing a reset token. Mentions the tok
 - `receiver` (string)
 - `name` (string)
 - `token` (string)
+- `senderName` (string)
+- `senderEmail` (string)
+- `attachments` (List<IFormFile>, optional)
 
 ---
 
@@ -107,6 +113,8 @@ A slightly more detailed variant of the password reset email that includes stand
 - `name` (string)
 - `token` (string)
 - `senderName` (string)
+- `senderEmail` (string)
+- `attachments` (List<IFormFile>, optional)
 
 ---
 
@@ -121,3 +129,4 @@ Notifies a user that their account has been restricted. Automatically includes a
 - `reason` (string): The detailed reason for the restriction
 - `senderName` (string)
 - `senderEmail` (string): Customer support contact email explicitly provided to the banned user
+- `attachments` (List<IFormFile>, optional)

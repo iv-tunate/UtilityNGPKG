@@ -20,16 +20,14 @@ namespace UtilityNGPKG.Test.config
         public static IServiceProvider Build()
         {
             var services = new ServiceCollection();
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("config/testconfig.json", false, true)
-                .Build();
+         
             services.AddLogging(config =>
             {
                 config.AddConsole();
                 config.SetMinimumLevel(LogLevel.Debug);
             });
             services.AddUtilityNGPKG();
+            services.Configure<TestConfig>(BaseTestFeature.Config);
             return services.BuildServiceProvider();
         }
 

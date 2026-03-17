@@ -4,6 +4,8 @@
 
 The payload you build when sending an email through `IMailService`. All fields are for addressing and content — credentials (your API key) are passed separately into the send method.
 
+> **Tip:** You don't always have to construct this manually. The `<see cref="UtilityNGPKG.Mailer.NotificationMessages"/>` class provides several pre-built templates (like welcome emails and password resets) that automatically return a fully populated `MailRequestDTO` ready to be sent!
+
 ## Properties
 
 | Property       | Type               | Required | Default          | Notes                                                                                                                            |
