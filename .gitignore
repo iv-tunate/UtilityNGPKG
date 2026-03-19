@@ -362,6 +362,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 *.json
+# Keep docfx.json
+!docs/docfx.json
 
 # DocFX Auto-Generated
 docs/api/
