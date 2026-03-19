@@ -10,6 +10,13 @@
 	<PropertyGroup>
 		<SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
 	</PropertyGroup>
+	<PropertyGroup>
+		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+	</PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -25,8 +32,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
     <PackageReference Include="Xunit.SkippableFact" Version="1.5.61" />
 	  <PackageReference Include="AngleSharp" Version="0.17.1" />
-	  
-	  
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UtilityNGPKG\UtilityNGPKG.csproj" />

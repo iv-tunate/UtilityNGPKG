@@ -118,7 +118,6 @@ if (!isValid)
 | `NIN`           | National Identity Number (Nigeria) |
 | `BVN`           | Bank Verification Number           |
 | `Passport`      | International Passport             |
-| `DriverLicense` | Driver's Licence                   |
 
 ### YouVerifyCredentials
 

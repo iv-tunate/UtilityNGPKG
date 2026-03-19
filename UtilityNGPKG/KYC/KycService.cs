@@ -48,7 +48,7 @@ namespace UtilityNGPKG.KYC
                     DocumentType.BVN => @"\b\d{11}\b",
                     DocumentType.NIN => @"\b\d{11}\b",
                     DocumentType.InternationalPassport => @"\b[A-Z]\d{8}\b",
-                    DocumentType.DriversLicense => @"\b[A-Z0-9\-]+\b",
+                    //DocumentType.DriversLicense => @"\b[A-Z0-9\-]+\b",
                     _ => @"\b[\w\-]+\b"
                 };
 
@@ -101,8 +101,9 @@ namespace UtilityNGPKG.KYC
         /// </summary>
         /// <param name="details"></param>
         /// <param name="baseUrl"></param>
+        /// <param name="apiKey"></param>
         /// <returns></returns>
-        public async Task<YouVerifyResponse> VerifyIdentificationNumberAsync(YouVerifyKycDto details, string baseUrl)
+        public async Task<YouVerifyResponse> VerifyIdentificationNumberAsync(YouVerifyKycDto details, string baseUrl, string apiKey)
         {
             try
             {
@@ -111,13 +112,13 @@ namespace UtilityNGPKG.KYC
                     DocumentType.BVN => $"{baseUrl}/v2/api/identity/ng/bvn",
                     DocumentType.NIN => $"{baseUrl}/v2/api/identity/ng/nin",
                     DocumentType.InternationalPassport => $"{baseUrl}/v2/api/identity/ng/passport",
-                    DocumentType.DriversLicense => $"{baseUrl}/v2/api/identity/ng/drivers-license",
+                    //DocumentType.DriversLicense => $"{baseUrl}/v2/api/identity/ng/drivers-license",
                     _ => throw new ArgumentOutOfRangeException(nameof(details.Type))
                 };
 
                 object body = details.Type switch
                 {
-                    DocumentType.BVN or DocumentType.NIN or DocumentType.DriversLicense => new
+                    DocumentType.BVN or DocumentType.NIN => new
                     {
                         id = details.Id,
                         isSubjectConsent = true
@@ -135,7 +136,11 @@ namespace UtilityNGPKG.KYC
 
                 var reqBody = apiService.SerializeReqBody(body);
 
-                var request = await apiService.PostRequest(reqBody, url, null, "YouVerify");
+                var header = new Dictionary<string, string>()
+                {
+                    {"token", apiKey }
+                };
+                var request = await apiService.PostRequest(reqBody, url, header, "YouVerify");
 
                 if (!request.IsSuccessStatusCode)
                 {

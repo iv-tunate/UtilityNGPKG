@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication.ExtendedProtection;
@@ -26,6 +26,19 @@ namespace UtilityNGPKG.Test.config
                 config.AddConsole();
                 config.SetMinimumLevel(LogLevel.Debug);
             });
+
+            //var cfg = new ConfigurationBuilder()
+            //    .SetBasePath(AppContext.BaseDirectory)
+            //    .AddJsonFile("config/config.json", optional: true)
+            //    .Build();
+
+            //services.AddHttpClient("YouVerify", client =>
+            //{
+            //    var apiKey = cfg["YouVerifyAPIKEY"];
+            //    if (!string.IsNullOrEmpty(apiKey))
+            //        client.DefaultRequestHeaders.Add("token", apiKey);
+            //});
+
             services.AddUtilityNGPKG();
             services.Configure<TestConfig>(BaseTestFeature.Config);
             return services.BuildServiceProvider();

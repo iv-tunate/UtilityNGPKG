@@ -11,7 +11,6 @@ An enum used in `YouVerifyKycDto` to specify what kind of identity document is b
 | `NIN`           | National Identity Number — issued by Nigeria's National Identity Management Commission (NIMC) |
 | `BVN`           | Bank Verification Number — issued by the Central Bank of Nigeria                              |
 | `Passport`      | International Passport                                                                        |
-| `DriverLicense` | Nigeria Driver's Licence issued by FRSC                                                       |
 
 ## Usage
 
