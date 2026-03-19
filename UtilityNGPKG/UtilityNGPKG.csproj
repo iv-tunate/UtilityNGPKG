@@ -7,11 +7,19 @@
   </PropertyGroup>
 
 	<PropertyGroup>
+  <PackageReadmeFile>README.md</PackageReadmeFile>
+</PropertyGroup>
+
+<ItemGroup>
+  <None Include="README.md" Pack="true" PackagePath="\" />
+</ItemGroup>
+	<PropertyGroup>
 		<PackageId>UtilityNGPKG</PackageId>
 		<Version>1.0.0</Version>
 		<Authors>Fortunate</Authors>
 		<Description>A comprehensive utility library for .NET with encryption, JWT tokens, pagination, file uploads, and more</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/iv-tunate/UtilityNGPKG</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/iv-tunate/UtilityNGPKG</RepositoryUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageTags>utility;encryption;jwt;pagination;file-upload;payment;tokenomic;</PackageTags>
@@ -41,3 +49,4 @@
 	<PackageReference Include="PdfPig" Version="0.1.13" />
   </ItemGroup>
 </Project>
+	
