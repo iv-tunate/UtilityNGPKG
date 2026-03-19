@@ -22,7 +22,7 @@ jobs:
         run: dotnet tool install -g docfx
 
       - name: Build documentation
-        run: docfx build docfx.json
+        run: docfx build ./docs/docfx.json
 
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
