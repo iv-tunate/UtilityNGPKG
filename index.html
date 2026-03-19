@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Home | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Home | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="utilityngpkg--v100">UtilityNGPKG — v1.0.0</h1>
+
+<p>Welcome to the official documentation for <strong>UtilityNGPKG</strong>, a collection of ready-to-use .NET service integrations for common backend tasks — from sending emails and verifying identities, to processing payments and generating JWT tokens.</p>
+<h2 id="getting-started--addutilityngpkg">Getting Started — AddUtilityNGPKG</h2>
+<p>The ideal way to register all services available on this package is the <code>AddUtilityNGPKG</code> extension method. Call it once in your <code>Program.cs</code>:</p>
+<pre><code class="lang-csharp">builder.Services.AddUtilityNGPKG();
+</code></pre>
+<p>This registers the following services automatically:</p>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Implementation</th>
+<th>Lifetime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IApiIntegrationService</code></td>
+<td><code>IntegrationService</code></td>
+<td>Scoped</td>
+</tr>
+<tr>
+<td><code>IPaystackService</code></td>
+<td><code>PaystackService</code></td>
+<td>Scoped</td>
+</tr>
+<tr>
+<td><code>IFileService</code></td>
+<td><code>FileService</code></td>
+<td>Scoped</td>
+</tr>
+<tr>
+<td><code>IKycService</code></td>
+<td><code>KycService</code></td>
+<td>Scoped</td>
+</tr>
+<tr>
+<td><code>IPaginationHelperFactory</code></td>
+<td><code>PaginationHelperFactory</code></td>
+<td>Singleton</td>
+</tr>
+<tr>
+<td><code>ITokenBuilder</code></td>
+<td><code>TokenBuilder</code></td>
+<td>Singleton</td>
+</tr>
+<tr>
+<td><code>IMailService</code></td>
+<td><code>MailService</code></td>
+<td>Singleton</td>
+</tr>
+<tr>
+<td><code>ISanitizationService</code></td>
+<td><code>SanitizationService</code></td>
+<td>Singleton</td>
+</tr>
+</tbody>
+</table>
+<h2 id="it-also-calls-servicesaddhttpclient-internally-so-you-might-not-need-to-register-that-separately">It also calls <code>services.AddHttpClient()</code> internally, so you might not need to register that separately.</h2>
+<h2 id="available-modules">Available Modules</h2>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="guides/ExternalApiIntegration.html">External API Integration</a></td>
+<td>Generic HTTP client wrapper for outbound third-party API calls</td>
+</tr>
+<tr>
+<td><a href="guides/FilePost/FilePost.html">File Upload</a></td>
+<td>Upload, download, sign, and delete files via cloud storage providers</td>
+</tr>
+<tr>
+<td><a href="guides/KYC/KYC.html">KYC Integration</a></td>
+<td>Identity verification and PDF text extraction</td>
+</tr>
+<tr>
+<td><a href="guides/Mailer/Mailer.html">Mailer</a></td>
+<td>Transactional emails with built-in HTML templates</td>
+</tr>
+<tr>
+<td><a href="guides/Pagination/Pagination.html">Pagination</a></td>
+<td>Slice in-memory collections into pages with full nav metadata</td>
+</tr>
+<tr>
+<td><a href="guides/PaymentGateway/PaymentGateway.html">Payment Gateway</a></td>
+<td>Full payment lifecycle — pay-ins, payouts, bank resolution, webhooks</td>
+</tr>
+<tr>
+<td><a href="guides/Sanitizer.html">Sanitizer</a></td>
+<td>XSS-safe HTML and URL sanitization</td>
+</tr>
+<tr>
+<td><a href="guides/Tokenomics.html">Tokenomics</a></td>
+<td>JWT generation, password hashing (Argon2id), AES/RSA encryption, token generation</td>
+</tr>
+<tr>
+<td><a href="guides/ResponseDetail.html">Response Detail</a></td>
+<td>Standardized API response wrapper used throughout the package</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

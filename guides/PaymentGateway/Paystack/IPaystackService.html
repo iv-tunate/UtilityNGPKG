@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>IPaystackService — Method Reference | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="IPaystackService — Method Reference | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/PaymentGateway/Paystack/IPaystackService.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0  |  <a href="../../../CHANGELOG.html">Changelog</a></p>
+</blockquote>
+<h1 id="ipaystackservice--method-reference">IPaystackService — Method Reference</h1>
+<p>This page covers all the methods available through <code>IPaystackService</code>. For an overview of how payment flows work end-to-end, see <a href="../PaymentGateway.html">PaymentGateway.md</a>.</p>
+<hr>
+<h2 id="initializepaymentasync">InitializePaymentAsync</h2>
+<p>Kicks off a payment transaction and returns a URL to redirect the user to. This is always the first step in any Pay-in flow.</p>
+<p>Pass in a <code>PaymentInitRequest</code> with the user details, amount, and your callback URL. You'll also pass your Paystack secret key — use the correct one for your environment (test vs. live).</p>
+<p>The <code>Amount</code> you provide should be in <strong>Naira</strong> (major currency). The service converts it to Kobo automatically before sending it to Paystack.</p>
+<p>If you don't provide a <code>Reference</code>, one is generated for you using your <code>TransactionId</code>, the current timestamp, and a short random suffix. This ensures it's unique. You should store whatever reference ends up in the response — you'll need it to verify the payment.</p>
+<pre><code class="lang-csharp">var request = new PaymentInitRequest
+{
+    UserId = currentUser.Id,
+    CustomerName = currentUser.FullName,
+    Email = currentUser.Email,
+    Amount = 5000,       // NGN 5,000 — converted to 500000 kobo internally
+    TransactionId = localTransaction.Id,
+    CallbackUrl = &quot;https://yourapp.com/payment/callback&quot;
+};
+
+var result = await _paystack.InitializePaymentAsync(request, secretKey);
+
+if (result.Status)
+{
+    // Redirect user to result.Data.AuthorizationUrl
+    // Store result.Data.Reference for later verification
+}
+</code></pre>
+<hr>
+<h2 id="verifypaymentasync">VerifyPaymentAsync</h2>
+<p>Confirms whether a payment actually succeeded. Call this after the user returns from Paystack's checkout, or in your webhook handler.</p>
+<p>Pass the <code>Reference</code> you stored during initialization. The response includes the payment status, confirmed amount, channel used, fees charged, and card/customer details if available.</p>
+<blockquote>
+<p>Always check <code>Data.Status</code> — not just the outer <code>Status</code> boolean. The outer one tells you the API call worked. <code>Data.Status</code> tells you what happened with the actual payment (<code>&quot;success&quot;</code>, <code>&quot;failed&quot;</code>, <code>&quot;abandoned&quot;</code>).</p>
+</blockquote>
+<pre><code class="lang-csharp">var result = await _paystack.VerifyPaymentAsync(reference, secretKey);
+
+if (result.Status &amp;&amp; result.Data?.Status == &quot;success&quot;)
+{
+    // payment confirmed — give value to the user
+}
+</code></pre>
+<hr>
+<h2 id="getbanksasync">GetBanksAsync</h2>
+<p>Returns a list of banks supported by Paystack. Use this to populate a bank selection dropdown in your UI when users want to set up a payout account. Each bank includes its <code>Name</code>, <code>Code</code>, and <code>Currency</code>.</p>
+<p>The <code>Code</code> is what you'll use when resolving an account number or creating a recipient.</p>
+<pre><code class="lang-csharp">var banks = await _paystack.GetBanksAsync(secretKey);
+// banks is a List&lt;BankData&gt;
+</code></pre>
+<hr>
+<h2 id="resolveaccountnumber">ResolveAccountNumber</h2>
+<p>Looks up a bank account to confirm it exists and returns the registered account holder's name. Run this before creating a recipient — it's how you verify the user provided the correct bank details and that the account belongs to them.</p>
+<p>Pass the 10-digit account number and the bank code (from <code>GetBanksAsync</code>).</p>
+<pre><code class="lang-csharp">var result = await _paystack.ResolveAccountNumber(&quot;0123456789&quot;, &quot;058&quot;, secretKey);
+
+if (result.Status)
+{
+    string accountName = result.Data.AccountName;
+    // show accountName to user for confirmation before proceeding
+}
+</code></pre>
+<hr>
+<h2 id="createrecipientasync">CreateRecipientAsync</h2>
+<p>Registers a verified bank account as a transfer recipient on Paystack. You'll need to do this once per user before you can send them money. The response contains a <code>RecipientCode</code> — store this in your database alongside the user's bank details.</p>
+<pre><code class="lang-csharp">var recipientRequest = new CreateRecipientRequest
+{
+    Name = &quot;John Doe&quot;,
+    AccountNumber = &quot;0123456789&quot;,
+    BankCode = &quot;058&quot;
+};
+
+var recipientData = await _paystack.CreateRecipientAsync(recipientRequest, secretKey);
+
+// Store recipientData.RecipientCode — you'll use this every time you pay this user
+</code></pre>
+<hr>
+<h2 id="initiatewithdrawalasync">InitiateWithdrawalAsync</h2>
+<p>Sends money from your Paystack balance to a recipient. You'll need the <code>RecipientCode</code> from the step above. Provide the amount in Naira.</p>
+<p>After a successful call, you'll receive a <code>WithdrawalResponse</code> with a <code>Status</code> and <code>Data.TransferCode</code>. The actual transfer might still be processing — monitor its final outcome via the Paystack webhook (<code>transfer.success</code> or <code>transfer.failed</code> events).</p>
+<pre><code class="lang-csharp">var withdrawal = new WithdrawalRequest
+{
+    UserId = currentUser.Id,
+    Amount = 10000,           // NGN 10,000
+    RecipientCode = &quot;RCP_xxxxxxxxxxxx&quot;,
+    Reason = &quot;Earnings payout&quot;
+};
+
+var result = await _paystack.InitiateWithdrawalAsync(withdrawal, secretKey);
+</code></pre>
+<hr>
+<h2 id="verifytransferasync">VerifyTransferAsync</h2>
+<p>Confirms the final status of a previously initiated transfer using the transfer reference. The response structure is the same as <code>VerifyPaymentAsync</code>, but includes transfer-specific fields like <code>TransferCode</code>, <code>Reason</code>, and <code>Recipient</code> details.</p>
+<pre><code class="lang-csharp">var result = await _paystack.VerifyTransferAsync(transferReference, secretKey);
+</code></pre>
+<hr>
+<h2 id="generatereference">GenerateReference</h2>
+<p>Generates a unique transaction reference string. This is called automatically during <code>InitializePaymentAsync</code> if you don't provide one, but it's also available directly if you need to pre-generate a reference before creating the request.</p>
+<p>The format is: <code>TXN_{guid}_{yyyyMMddHHmmss}_{randomSuffix}</code></p>
+<pre><code class="lang-csharp">string reference = _paystack.GenerateReference(yourTransactionGuid);
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/PaymentGateway/Paystack/IPaystackService.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

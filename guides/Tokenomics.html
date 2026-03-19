@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Tokenomics | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Tokenomics | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/Tokenomics.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0  |  <a href="../CHANGELOG.html">Changelog</a></p>
+</blockquote>
+<h1 id="tokenomics">Tokenomics</h1>
+<p>The Tokenomics module is your toolkit for everything authentication and cryptography-related — JWT generation, password hashing, encryption/decryption, random token generation, and signature verification. If your application needs to issue tokens, hash passwords, or verify payload integrity, this is where that logic lives.</p>
+<h2 id="how-to-access">How to Access</h2>
+<p>Everything is exposed through the <code>ITokenBuilder</code> interface. Register it once in your DI setup (or use the package's built-in extension method — see <a href="../index.html">Getting Started</a>), and then inject it wherever you need it:</p>
+<pre><code class="lang-csharp">// In Program.cs (already done if you called AddUtilityNGPKG)
+services.AddSingleton&lt;ITokenBuilder, TokenBuilder&gt;();
+
+// In your service or controller
+public class AuthService
+{
+    private readonly ITokenBuilder _tokenBuilder;
+    public AuthService(ITokenBuilder tokenBuilder)
+    {
+        _tokenBuilder = tokenBuilder;
+    }
+}
+</code></pre>
+<hr>
+<h2 id="available-methods">Available Methods</h2>
+<h3 id="generatejwttoken">GenerateJWTToken</h3>
+<p>Generates a signed JSON Web Token for an authenticated user. It builds a set of standard claims (user ID, email, role, verification status) and any custom claims you want to include, then signs the token using HMAC-SHA512.</p>
+<p><strong>Returns:</strong> A tuple — the JWT string itself, and a boolean indicating whether the generation succeeded.</p>
+<p><strong>Key requirements:</strong></p>
+<ul>
+<li><code>SecretKey</code> must be exactly <strong>64 bytes (512 bits)</strong>. Anything shorter will fail. You can use <code>GenerateRandomToken(64)</code> (see below) to produce a suitable key.</li>
+<li><code>ExpirationMinutes</code> defaults to 60 if not set. Adjust based on your session policy.</li>
+<li><code>Issuer</code> and <code>Audience</code> should match what you've configured in your JWT middleware validation settings.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="lang-csharp">var jwtSettings = new JwtSettings
+{
+    UserId = user.Id,
+    Email = user.Email,
+    Role = user.Role,
+    VerificationStatus = &quot;Verified&quot;,
+    SecretKey = &quot;your-64-byte-secret-key-here...&quot;,
+    Issuer = &quot;https://yourapp.com&quot;,
+    ExpirationMinutes = 120
+};
+
+var (token, success) = _tokenBuilder.GenerateJWTToken(jwtSettings);
+if (success)
+{
+    // return the token to the client
+}
+</code></pre>
+<p>See also: <a href="#jwtsettings-reference">JwtSettings</a></p>
+<hr>
+<h3 id="hash_argon2id">Hash_Argon2id</h3>
+<p>Hashes a value (typically a password) using Argon2id — the current recommended standard for password storage. It's resistant to GPU-based attacks and brute-force attempts, significantly more secure than bcrypt or PBKDF2 for this purpose.</p>
+<p><strong>Returns:</strong> A tuple with the encoded hash string and a success flag. Store the hash string in your database — it's self-contained and includes the salt and algorithm parameters.</p>
+<pre><code class="lang-csharp">var (hashedPassword, ok) = _tokenBuilder.Hash_Argon2id(plainTextPassword);
+</code></pre>
+<hr>
+<h3 id="verifyargon2idhash">VerifyArgon2idHash</h3>
+<p>Verifies a plain text value against a previously hashed Argon2id string. Returns <code>true</code> if they match, <code>false</code> otherwise.</p>
+<pre><code class="lang-csharp">bool isValid = _tokenBuilder.VerifyArgon2idHash(providedPassword, storedHash);
+</code></pre>
+<hr>
+<h3 id="generaterandomtoken">GenerateRandomToken</h3>
+<p>Generates a cryptographically secure random token of a given byte length. The result is Base64-encoded. Use this for things like email verification tokens, password reset links, or generating a JWT secret key.</p>
+<p><strong><code>length</code></strong> — the number of bytes. For a JWT-compatible secret (512 bits), pass <code>64</code>.</p>
+<pre><code class="lang-csharp">var (token, success) = _tokenBuilder.GenerateRandomToken(64);
+// token is a Base64-encoded 64-byte string
+</code></pre>
+<hr>
+<h3 id="generaterandomnumber">GenerateRandomNumber</h3>
+<p>Generates a random numeric string of a specified digit length. Useful for OTP codes (e.g., 6-digit PIN).</p>
+<pre><code class="lang-csharp">var (otp, success) = _tokenBuilder.GenerateRandomNumber(6); // &quot;483920&quot;
+</code></pre>
+<hr>
+<h3 id="generatehmacsha256">GenerateHMACSHA256</h3>
+<p>Creates an HMAC-SHA256 signature from a plain text value and a secret key. The output is Base64-encoded. This is useful for signing webhook payloads, short-lived tokens, or any data that needs integrity protection without full encryption.</p>
+<pre><code class="lang-csharp">var (signature, success) = _tokenBuilder.GenerateHMACSHA256(payload, secretKey);
+</code></pre>
+<hr>
+<h3 id="verifyhmacsha256">VerifyHMACSHA256</h3>
+<p>Verifies that a piece of data matches an expected HMAC-SHA256 signature. Uses constant-time comparison internally so it's safe against timing attacks.</p>
+<pre><code class="lang-csharp">var (error, isValid) = _tokenBuilder.VerifyHMACSHA256(payload, expectedSignature, secretKey);
+</code></pre>
+<p>If <code>isValid</code> is <code>false</code>, check the <code>error</code> string for the reason.</p>
+<hr>
+<h3 id="encryptaes--decryptaes">EncryptAES / DecryptAES</h3>
+<p>Encrypts and decrypts data using AES-256-CBC with PKCS7 padding. The encrypted output is Base64-encoded.</p>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li><code>key</code> must be at least <strong>16 bytes</strong>. For AES-256, use a 32-byte key.</li>
+<li><code>iv</code> must be exactly <strong>16 bytes</strong>.</li>
+</ul>
+<p>Both methods return a tuple with the result string, a success flag, and an error message if something went wrong.</p>
+<pre><code class="lang-csharp">byte[] key = Encoding.UTF8.GetBytes(&quot;your-32-byte-key-here-padded!!!!&quot;);
+byte[] iv = Encoding.UTF8.GetBytes(&quot;your-16-byte-iv!&quot;);
+
+var (encrypted, ok, err) = _tokenBuilder.EncryptAES(&quot;sensitive data&quot;, key, iv);
+var (decrypted, ok2, err2) = _tokenBuilder.DecryptAES(encrypted, key, iv);
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> The same key and IV used for encryption must be used for decryption. Never hardcode these in source code — store them in environment variables or a secrets vault.</p>
+</blockquote>
+<hr>
+<h3 id="encryptrsa--decryptrsa">EncryptRSA / DecryptRSA</h3>
+<p>Asymmetric encryption using RSA with OAEP-SHA256 padding. Encrypt with a public key; decrypt with the corresponding private key. Useful for encrypting small payloads (like symmetric keys).</p>
+<p><code>EncryptRSA</code> returns a byte array. <code>DecryptRSA</code> takes the Base64-encoded ciphertext and returns the plain text string.</p>
+<hr>
+<h3 id="generatersaparameters">GenerateRSAParameters</h3>
+<p>Generates a fresh 2048-bit RSA key pair and returns both the private and public <code>RSAParameters</code>. Use this during key generation workflows — not for every request.</p>
+<pre><code class="lang-csharp">var (privateKey, publicKey) = _tokenBuilder.GenerateRSAParameters();
+</code></pre>
+<hr>
+<h3 id="constanttimecomparison">ConstantTimeComparison</h3>
+<p>Compares two strings in constant time to prevent timing-based attacks. Returns <code>true</code> if the strings are equal. Use this when comparing secrets, tokens, or HMAC outputs — never use <code>==</code> for that.</p>
+<hr>
+<h2 id="jwtsettings-reference">JwtSettings Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UserId</code></td>
+<td><code>Guid</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>Mapped to the <code>nameid</code> claim</td>
+</tr>
+<tr>
+<td><code>Email</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>Mapped to the <code>email</code> claim</td>
+</tr>
+<tr>
+<td><code>Role</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td><code>&quot;&quot;</code></td>
+<td>Mapped to the <code>role</code> claim</td>
+</tr>
+<tr>
+<td><code>VerificationStatus</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td><code>&quot;&quot;</code></td>
+<td>Custom claim</td>
+</tr>
+<tr>
+<td><code>SecretKey</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>Must be 64 bytes (512-bit)</td>
+</tr>
+<tr>
+<td><code>Issuer</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td><code>&quot;&quot;</code></td>
+<td>Match your JWT validation config</td>
+</tr>
+<tr>
+<td><code>Audience</code></td>
+<td><code>string[]</code></td>
+<td>No</td>
+<td><code>null</code></td>
+<td>Match your JWT validation config</td>
+</tr>
+<tr>
+<td><code>ExpirationMinutes</code></td>
+<td><code>int</code></td>
+<td>No</td>
+<td><code>60</code></td>
+<td>Token lifetime in minutes</td>
+</tr>
+<tr>
+<td><code>CustomClaims</code></td>
+<td><code>List&lt;Claim&gt;</code></td>
+<td>No</td>
+<td><code>null</code></td>
+<td>Any additional claims to embed</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/Tokenomics.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

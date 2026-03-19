@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>External API Integration | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="External API Integration | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/ExternalApiIntegration.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0  |  <a href="../CHANGELOG.html">Changelog</a></p>
+</blockquote>
+<h1 id="external-api-integration">External API Integration</h1>
+<p>The External API Integration module provides a lightweight, reusable HTTP client wrapper for making outbound requests to third-party APIs. Instead of managing <code>HttpClient</code> lifecycle and JSON serialization repeatedly across your codebase, you inject <code>IApiIntegrationService</code> and make typed calls in a few lines.</p>
+<p>This service is also used <strong>internally</strong> by the Paystack and KYC modules, so you may not need to call it directly at all — but it's fully available if you need to integrate with any other external API.</p>
+<h2 id="how-to-access">How to Access</h2>
+<p><code>IApiIntegrationService</code> is registered as a scoped service. It's included automatically via <code>AddUtilityNGPKG()</code>. Inject it where needed:</p>
+<pre><code class="lang-csharp">public class MyThirdPartyService
+{
+    private readonly IApiIntegrationService _api;
+    public MyThirdPartyService(IApiIntegrationService api)
+    {
+        _api = api;
+    }
+}
+</code></pre>
+<hr>
+<h2 id="available-methods">Available Methods</h2>
+<h3 id="postrequest">PostRequest</h3>
+<p>Makes an HTTP POST request with a JSON body to a given URL. You supply the headers (e.g., Authorization), the body object, and an <code>HttpClient</code> name. Returns the raw <code>HttpResponseMessage</code> so you can handle status codes and deserialize the response on your end.</p>
+<ul>
+<li>The body is serialized to JSON automatically using <code>System.Text.Json</code>.</li>
+<li>If the request fails or throws, the exception is logged and you'll receive a default/error response object rather than an uncaught exception.</li>
+</ul>
+<pre><code class="lang-csharp">var headers = new Dictionary&lt;string, string&gt;
+{
+    { &quot;Authorization&quot;, $&quot;Bearer {apiKey}&quot; }
+};
+
+var body = new { email = &quot;user@example.com&quot;, amount = 5000 };
+
+var response = await _api.PostRequest(&quot;https://api.example.com/charge&quot;, headers, body, &quot;myClientName&quot;);
+
+if (response.IsSuccessStatusCode)
+{
+    var content = await response.Content.ReadAsStringAsync();
+    // deserialize content to your expected type
+}
+</code></pre>
+<hr>
+<h3 id="getrequest">GetRequest</h3>
+<p>Makes an HTTP GET request to a given URL with custom headers. Returns the raw <code>HttpResponseMessage</code>.</p>
+<pre><code class="lang-csharp">var headers = new Dictionary&lt;string, string&gt;
+{
+    { &quot;Authorization&quot;, $&quot;Bearer {apiKey}&quot; }
+};
+
+var response = await _api.GetRequest(&quot;https://api.example.com/users&quot;, headers, &quot;myClientName&quot;);
+</code></pre>
+<hr>
+<h3 id="serializerequestbody">SerializeRequestBody</h3>
+<p>Serializes any object to a JSON <code>StringContent</code> suitable for use as an HTTP request body. This is useful if you need to build requests manually or if you're working with HttpClient directly alongside this service.</p>
+<pre><code class="lang-csharp">var content = _api.SerializeRequestBody(new { name = &quot;John&quot; });
+// Returns: StringContent with JSON and application/json media type
+</code></pre>
+<hr>
+<h2 id="client-naming">Client Naming</h2>
+<p>The <code>clientName</code> parameter in both <code>PostRequest</code> and <code>GetRequest</code> maps to a named <code>HttpClient</code> registered with <code>IHttpClientFactory</code>. If you haven't registered a named client, passing any non-empty string will still work using the default client configuration. Named clients are useful when different APIs have different base addresses or timeouts — you'd configure those in <code>Program.cs</code> via <code>services.AddHttpClient(&quot;myClientName&quot;, ...)</code>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/ExternalApiIntegration.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

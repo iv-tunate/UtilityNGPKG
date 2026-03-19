@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>KYC (Know Your Customer) | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="KYC (Know Your Customer) | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/KYC/KYC.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0  |  <a href="../../CHANGELOG.html">Changelog</a></p>
+</blockquote>
+<h1 id="kyc-know-your-customer">KYC (Know Your Customer)</h1>
+<p>The KYC module helps you verify user identities through supported identity providers. It supports two verification flows — checking a document via the identity service, and extracting text directly from a PDF uploaded by the user using native PDF parsing (no external service required for that part).</p>
+<h2 id="how-to-access">How to Access</h2>
+<p><code>IKycService</code> is registered as a scoped service and is available after adding <code>AddUtilityNGPKG()</code> to your program.cs.</p>
+<pre><code class="lang-csharp">public class OnboardingService
+{
+    private readonly IKycService _kyc;
+    public OnboardingService(IKycService kyc)
+    {
+        _kyc = kyc;
+    }
+}
+</code></pre>
+<p>You'll need your YouVerify credentials to call the API endpoints. Keep them out of source code — store them in environment variables:</p>
+<pre><code class="lang-csharp">var credentials = new YouVerifyCredentials
+{
+    Token = _config[&quot;YouVerify:Token&quot;],
+    BaseUrl = _config[&quot;YouVerify:BaseUrl&quot;]
+};
+</code></pre>
+<hr>
+<h2 id="available-methods">Available Methods</h2>
+<h3 id="verifydocumentasync">VerifyDocumentAsync</h3>
+<p>Submits a KYC verification request to YouVerify using document details provided by the user. Under the hood, it posts the data to the YouVerify identity verification endpoint and returns the full structured response.</p>
+<p>What you pass in:</p>
+<ul>
+<li>The document details (<code>YouVerifyKycDto</code>) — including the document type, number, and optionally the user's date of birth and first/last name.</li>
+<li>The credentials for authenticating with YouVerify.</li>
+</ul>
+<pre><code class="lang-csharp">var kycData = new YouVerifyKycDto
+{
+    DocumentType = DocumentType.NIN,
+    DocumentNumber = &quot;12345678901&quot;,
+    DateOfBirth = &quot;1995-03-14&quot;,
+    FirstName = &quot;John&quot;,
+    LastName = &quot;Doe&quot;
+};
+
+var result = await _kyc.VerifyDocumentAsync(kycData, credentials);
+
+if (result.IsSuccess &amp;&amp; result.Data?.Status == &quot;found&quot;)
+{
+    // identity confirmed
+}
+</code></pre>
+<p>See the <a href="#model-reference">Model Reference</a> below for the full breakdown of <code>YouVerifyKycDto</code> and what the response looks like.</p>
+<hr>
+<h3 id="extracttextfrompdfasync">ExtractTextFromPdfAsync</h3>
+<p>Extracts raw text content from a PDF file provided as an <code>IFormFile</code>. No external API call is made — this runs entirely server-side using the PdfPig library.</p>
+<p>This is useful when you need to parse user-uploaded documents (e.g., bank statements, certificates) and extract information for further processing.</p>
+<pre><code class="lang-csharp">string extractedText = await _kyc.ExtractTextFromPdfAsync(uploadedPdfFile);
+</code></pre>
+<p>Returns the full extracted text as a single string. If the PDF has no extractable text (e.g., it's a scanned image), the result will be an empty string.</p>
+<hr>
+<h3 id="validatewebhook-webhookverifier---youverify">ValidateWebhook (WebhookVerifier - YouVerify)</h3>
+<p>If you've set up a webhook endpoint to receive YouVerify callback notifications, use <code>WebhookVerifier</code> to validate that incoming requests genuinely came from YouVerify.</p>
+<p>It uses HMAC-SHA512 — YouVerify signs the payload with your secret key and sends the signature in the <code>x-youverify-signature</code> header. You recompute the hash on your end and compare.</p>
+<pre><code class="lang-csharp">bool isValid = WebhookVerifier.IsValidSignature(
+    rawBody: requestBodyString,    // the raw JSON string from the request body
+    signature: request.Headers[&quot;x-youverify-signature&quot;],
+    secret: _config[&quot;YouVerify:WebhookSecret&quot;]
+);
+
+if (!isValid)
+    return Unauthorized();
+</code></pre>
+<blockquote>
+<p>Always validate webhooks before trusting the payload. Never skip this step.</p>
+</blockquote>
+<hr>
+<h2 id="model-reference">Model Reference</h2>
+<h3 id="youverifykycdto">YouVerifyKycDto</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DocumentType</code></td>
+<td><code>DocumentType</code> (enum)</td>
+<td>Yes</td>
+<td>See below</td>
+</tr>
+<tr>
+<td><code>DocumentNumber</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The ID number on the document</td>
+</tr>
+<tr>
+<td><code>DateOfBirth</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Format: <code>YYYY-MM-DD</code></td>
+</tr>
+<tr>
+<td><code>FirstName</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Used for name-match verification</td>
+</tr>
+<tr>
+<td><code>LastName</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Used for name-match verification</td>
+</tr>
+</tbody>
+</table>
+<h3 id="documenttype-enum">DocumentType Enum</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NIN</code></td>
+<td>National Identity Number (Nigeria)</td>
+</tr>
+<tr>
+<td><code>BVN</code></td>
+<td>Bank Verification Number</td>
+</tr>
+<tr>
+<td><code>Passport</code></td>
+<td>International Passport</td>
+</tr>
+</tbody>
+</table>
+<h3 id="youverifycredentials">YouVerifyCredentials</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>Your YouVerify API token</td>
+</tr>
+<tr>
+<td><code>BaseUrl</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The base API URL (from your YouVerify dashboard)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="youverifyresponse">YouVerifyResponse</h3>
+<p>The response from <code>VerifyDocumentAsync</code> wraps the YouVerify API's reply. Key things to check:</p>
+<ul>
+<li><strong><code>IsSuccess</code></strong> — Whether the API call itself succeeded (HTTP-level).</li>
+<li><strong><code>Data.Status</code></strong> — The verification outcome from YouVerify. Will be <code>&quot;found&quot;</code> if the identity was successfully matched, or another value if not.</li>
+<li><strong><code>Data.Data</code></strong> — The full identity data returned by YouVerify, including full name, date of birth, address, photo URL (if available), and more depending on the document type.</li>
+</ul>
+<p>If something went wrong (network error, invalid credentials, etc.), <code>IsSuccess</code> will be <code>false</code> and you'll see details in the error message rather than getting an unhandled exception.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/KYC/KYC.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

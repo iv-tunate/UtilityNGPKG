@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>YouVerify Webhook Validation | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="YouVerify Webhook Validation | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../../../favicon.ico">
+      <link rel="stylesheet" href="../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../toc.html">
+      <meta name="docfx:tocrel" content="../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/KYC/YouVerify/WebhookVerifier.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../index.html">
+            <img id="logo" class="svg" src="../../../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0</p>
+</blockquote>
+<h1 id="youverify-webhook-validation">YouVerify Webhook Validation</h1>
+<p>The <code>WebhookVerifier</code> static class validates that incoming YouVerify webhook POST requests are genuine — i.e., they actually originated from YouVerify and haven't been tampered with in transit. It uses HMAC-SHA256 with your webhook signing key.</p>
+<h2 id="how-to-use">How to Use</h2>
+<p>There are two overloads depending on whether you still have access to the <code>HttpRequest</code> object, or you've already read the body.</p>
+<h3 id="with-httprequest-in-request-validation">With HttpRequest (in-request validation)</h3>
+<p>Call this inside your webhook controller action. The method reads the raw body from the request stream and re-positions it so your normal model binding still works after the call.</p>
+<pre><code class="lang-csharp">[HttpPost(&quot;kyc/webhook&quot;)]
+public async Task&lt;IActionResult&gt; HandleKycWebhook()
+{
+    bool isValid = WebhookVerifier.IsValidYouVerifySignature(
+        Request,
+        _config[&quot;YouVerify:WebhookSecret&quot;]
+    );
+
+    if (!isValid)
+        return Unauthorized();
+
+    var payload = await Request.ReadFromJsonAsync&lt;YouVerifyWebhookEvent&gt;();
+    // process the event...
+    return Ok();
+}
+</code></pre>
+<blockquote>
+<p><strong>Important:</strong> <code>EnableBuffering()</code> must be called before accessing <code>Request.Body</code> for re-reading. Add <code>app.Use(async (ctx, next) =&gt; { ctx.Request.EnableBuffering(); await next(); });</code> to your middleware pipeline.</p>
+</blockquote>
+<hr>
+<h3 id="with-raw-body-string-pre-read-body">With raw body string (pre-read body)</h3>
+<p>Use this when you've already read the body as a string elsewhere in your pipeline:</p>
+<pre><code class="lang-csharp">bool isValid = WebhookVerifier.IsValidYouVerifySignature(
+    rawBody: bodyString,
+    signatureHeader: request.Headers[&quot;x-youverify-signature&quot;],
+    signingKey: _config[&quot;YouVerify:WebhookSecret&quot;]
+);
+</code></pre>
+<p>The method strips the <code>sha256=</code> prefix from the signature header automatically when using the <code>HttpRequest</code> overload. With the string overload, pass just the signature value without the prefix.</p>
+<h2 id="how-it-works">How It Works</h2>
+<ol>
+<li>Reads the raw request body as UTF-8 text.</li>
+<li>Computes an HMAC-SHA256 hash of the body using your signing key.</li>
+<li>Compares the computed hash against the <code>x-youverify-signature</code> header value using <code>CryptographicOperations.FixedTimeEquals</code> — this is safe against timing attacks.</li>
+<li>Returns <code>true</code> only if everything matches exactly.</li>
+</ol>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/KYC/YouVerify/WebhookVerifier.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Mailer | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Mailer | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/Mailer/Mailer.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0  |  <a href="../../CHANGELOG.html">Changelog</a></p>
+</blockquote>
+<h1 id="mailer">Mailer</h1>
+<p>The Mailer module provides everything needed to send transactional emails from your application. It also ships a collection of pre-built HTML email templates for the most common notification scenarios — registration confirmation, login alerts, password resets, and account status updates.</p>
+<h2 id="how-to-access">How to Access</h2>
+<p><code>IMailService</code> is registered as a singleton and is available after adding <code>AddUtilityNGPKG()</code> to your program.cs.</p>
+<pre><code class="lang-csharp">builder.Services.AddUtilityNGPKG();
+
+
+Inject it into your service or controller:
+
+```csharp
+public class NotificationService
+{
+    private readonly IMailService _mailer;
+    public NotificationService(IMailService mailer)
+    {
+        _mailer = mailer;
+    }
+}
+</code></pre>
+<hr>
+<h2 id="sending-emails">Sending Emails</h2>
+<p>There are two provider methods. Both accept a <code>MailRequestDTO</code> object and an API key for the selected provider. Both return a <code>ResponseDetail&lt;bool&gt;</code> so you can check success cleanly.</p>
+<h3 id="sendmail_sendgrid">SendMail_Sendgrid</h3>
+<p>Sends an email via Twilio SendGrid's REST API. Best suited for production environments.</p>
+<ul>
+<li>Under the hood, it converts the HTML body to plain text automatically (for email clients that don't render HTML).</li>
+<li>File attachments are supported — pass any <code>IFormFile</code> instances in the <code>Attachments</code> list on the request.</li>
+<li>The API key should be a valid SendGrid v3 key stored in your application's environment variables or secrets vault — never hardcoded.</li>
+</ul>
+<pre><code class="lang-csharp">var mail = new MailRequestDTO
+{
+    Sender = &quot;noreply@yourdomain.com&quot;,
+    SenderName = &quot;YourApp&quot;,
+    Receiver = user.Email,
+    ReceiverName = user.Name,
+    Subject = &quot;Welcome!&quot;,
+    Body = &quot;&lt;p&gt;Thanks for signing up.&lt;/p&gt;&quot;
+};
+
+var result = await _mailer.SendMail_Sendgrid(mail, _config[&quot;SendGrid:ApiKey&quot;]);
+</code></pre>
+<hr>
+<h3 id="sendmail_mailtrap">SendMail_MailTrap</h3>
+<p>Sends via MailTrap's sandbox API. Designed for development and testing — emails are intercepted and never delivered to real inboxes.</p>
+<p>Works identically to <code>SendMail_Sendgrid</code> in terms of input. Just swap the API key for your MailTrap token.</p>
+<pre><code class="lang-csharp">var result = await _mailer.SendMail_MailTrap(mail, _config[&quot;MailTrap:ApiKey&quot;]);
+</code></pre>
+<hr>
+<h2 id="mailrequestdto-reference">MailRequestDTO Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Sender</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>Must be a verified sender address on your provider</td>
+</tr>
+<tr>
+<td><code>SenderName</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>Display name shown in the email client</td>
+</tr>
+<tr>
+<td><code>Receiver</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>Recipient's email address</td>
+</tr>
+<tr>
+<td><code>ReceiverName</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td><code>&quot;Friend&quot;</code></td>
+<td>Recipient's display name</td>
+</tr>
+<tr>
+<td><code>Subject</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td><code>&quot;Notification&quot;</code></td>
+<td>Subject line</td>
+</tr>
+<tr>
+<td><code>Body</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>HTML or plain text email content</td>
+</tr>
+<tr>
+<td><code>Attachments</code></td>
+<td><code>List&lt;IFormFile&gt;?</code></td>
+<td>No</td>
+<td><code>null</code></td>
+<td>File attachments to include</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="pre-built-email-templates">Pre-Built Email Templates</h2>
+<p>The <code>NotificationMessages</code> class generates ready-to-use <code>MailResponseDTO</code> objects with styled HTML bodies. This means you don't have to write any HTML — just fill in the dynamic values and pass the result to <code>SendMail_*</code>.</p>
+<blockquote>
+<p>These templates use a dark-themed design with your sender name as the branding element. The template header color can be customized in a future version.</p>
+</blockquote>
+<h3 id="registrationconfirmationmailnotification">RegistrationConfirmationMailNotification</h3>
+<p>Sends a welcome email containing a verification token. The token expires in 5 minutes — make sure you're generating and storing short-lived tokens on your end.</p>
+<pre><code class="lang-csharp">var emailContent = NotificationMessages.RegistrationConfirmationMailNotification(
+    receiver: user.Email,
+    token: verificationToken,
+    senderName: &quot;YourApp&quot;,
+    name: user.FirstName
+);
+
+var mailRequest = new MailRequestDTO
+{
+    Sender = &quot;noreply@yourdomain.com&quot;,
+    SenderName = &quot;YourApp&quot;,
+    Receiver = emailContent.Receiver,
+    ReceiverName = emailContent.ReceiverName,
+    Subject = emailContent.Subject,
+    Body = emailContent.Body
+};
+
+await _mailer.SendMail_Sendgrid(mailRequest, apiKey);
+</code></pre>
+<hr>
+<h3 id="loginnotification">LoginNotification</h3>
+<p>Sends a security alert email when a login attempt is detected. Includes device info, IP address, country, and a verification token. The token expires in 10 minutes.</p>
+<pre><code class="lang-csharp">var emailContent = NotificationMessages.LoginNotification(
+    receiver: user.Email,
+    name: user.FirstName,
+    token: loginToken,
+    device: &quot;Chrome / Windows&quot;,
+    ip: &quot;102.34.67.88&quot;,
+    country: &quot;Nigeria&quot;
+);
+</code></pre>
+<hr>
+<h3 id="passwordresetmailnotification">PasswordResetMailNotification</h3>
+<p>Sends a password reset email with a token. The token expires in 30 minutes and security tips are included inline in the email.</p>
+<pre><code class="lang-csharp">var emailContent = NotificationMessages.PasswordResetMailNotification(
+    receiver: user.Email,
+    name: user.FirstName,
+    token: resetToken,
+    senderName: &quot;YourApp&quot;
+);
+</code></pre>
+<hr>
+<h3 id="accountverificationsuccessnotification">AccountVerificationSuccessNotification</h3>
+<p>A simple confirmation email telling the user their account has been verified.</p>
+<hr>
+<h3 id="blacklistnotification">BlacklistNotification</h3>
+<p>Notifies a user that their account has been restricted. Accepts a <code>reason</code> parameter that's displayed prominently in the email body.</p>
+<pre><code class="lang-csharp">var emailContent = NotificationMessages.BlacklistNotification(
+    receiver: user.Email,
+    name: user.FirstName,
+    reason: &quot;Suspicious activity detected.&quot;,
+    senderName: &quot;YourApp&quot;,
+    senderEmail: &quot;support@yourdomain.com&quot;
+);
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/Mailer/Mailer.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

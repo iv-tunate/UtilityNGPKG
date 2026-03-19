@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Pagination | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Pagination | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/Pagination/Pagination.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0  |  <a href="../../CHANGELOG.html">Changelog</a></p>
+</blockquote>
+<h1 id="pagination">Pagination</h1>
+<p>The Pagination module gives you a clean, reusable way to slice in-memory collections into pages without writing the maths yourself every time. You get back both the paginated data and all the metadata a frontend needs to render navigation controls.</p>
+<h2 id="how-to-access">How to Access</h2>
+<p>There are two ways to use it:</p>
+<p><strong>1. Via Dependency Injection (recommended)</strong></p>
+<p><code>IPaginationHelperFactory</code> is registered as a singleton. Inject it into your service, then call <code>Create()</code> with your collection and page size. This keeps your code testable and decoupled.</p>
+<pre><code class="lang-csharp">public class UserService
+{
+    private readonly IPaginationHelperFactory _pagination;
+    public UserService(IPaginationHelperFactory pagination)
+    {
+        _pagination = pagination;
+    }
+
+    public PaginatedResponse&lt;User&gt; GetUsers(List&lt;User&gt; allUsers, int page, int pageSize)
+    {
+        var helper = _pagination.Create(allUsers, pageSize);
+        return helper.GetPagedResponse(page, pageSize);
+    }
+}
+</code></pre>
+<p><strong>2. Direct instantiation</strong></p>
+<p>You can instantiate <code>PaginationHelper&lt;T&gt;</code> directly:</p>
+<pre><code class="lang-csharp">var helper = new PaginationHelper&lt;User&gt;(allUsers, itemsPerPage: 10);
+var result = helper.GetPagedResponse(pageNumber: 1, pageSize: 10);
+</code></pre>
+<blockquote>
+<p><strong>Performance Deep Dive: <code>IEnumerable&lt;T&gt;</code> vs. <code>IQueryable&lt;T&gt;</code></strong></p>
+<p>The <code>PaginationHelper&lt;T&gt;</code> in this package operates on <code>IEnumerable&lt;T&gt;</code>. This means it works with collections that are <strong>already loaded into your server's memory</strong>.</p>
+<p><strong>How it works here (<code>IEnumerable&lt;T&gt;</code>):</strong>
+If you have 10,000 users in your database and you pass them to this helper to get page 1 (10 items), your application first downloads all 10,000 users from the database into RAM, and <em>then</em> the helper slices out the 10 you asked for.</p>
+<ul>
+<li><strong>Pros:</strong> Great for small datasets, cached lists, or data originating from a 3rd-party API where memory footprint is negligible.</li>
+<li><strong>Cons:</strong> Terrible for large database tables. It wastes server memory, increases garbage collection pressure, and slows down database query times.</li>
+</ul>
+<p><strong>How to accurately manage large databases (<code>IQueryable&lt;T&gt;</code>):</strong>
+When querying large SQL databases via Entity Framework (EF Core), you do <strong>not</strong> use <code>PaginationHelper&lt;T&gt;</code> to slice the data. Instead, slice the data natively on the SQL server using <code>.Skip().Take()</code>, and then manually construct a <code>PaginatedResponse&lt;T&gt;</code> to maintain a consistent API response format for your frontend:</p>
+<pre><code class="lang-csharp">var totalItems = await dbContext.Users.CountAsync();
+
+var pagedUsers = await dbContext.Users
+    .OrderBy(u =&gt; u.Id)
+    .Skip((pageNumber - 1) * pageSize)
+    .Take(pageSize)
+    .ToListAsync();
+
+// You can then wrap the result in PaginatedResponse&lt;T&gt; 
+// (HasNextPage, PreviousPage, etc. are calculated automatically)
+var response = new PaginatedResponse&lt;User&gt;
+{
+    Data = pagedUsers,
+    CurrentPage = pageNumber,
+    PageSize = pageSize,
+    TotalItems = totalItems,
+    TotalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+};
+
+return Ok(response);
+</code></pre>
+<p><strong>The Takeaway:</strong> Use <code>PaginationHelper&lt;T&gt;</code> when you already have the full list in memory (e.g., parsing a CSV file, grouping an existing dataset, or caching). Use native EF Core <code>.Skip().Take()</code> combined with a manual <code>PaginatedResponse&lt;T&gt;</code> when querying databases directlycor large datasets to ensure peak efficiency while preserving standard API responses.</p>
+</blockquote>
+<hr>
+<h2 id="available-methods-on-paginationhelper">Available Methods on PaginationHelper</h2>
+<h3 id="getpagedresponse-basic">GetPagedResponse (basic)</h3>
+<p>Returns a page of items from the collection with full metadata — total items, total pages, current page, and whether there are previous/next pages.</p>
+<p>If an out-of-range page number is requested (e.g., page -1 or page 999 when only 5 pages exist), it's clamped automatically. You won't get an exception — just the nearest valid page.</p>
+<pre><code class="lang-csharp">var result = helper.GetPagedResponse(pageNumber: 2, pageSize: 10);
+// result.Data — the items on this page
+// result.TotalItems — full dataset count
+// result.TotalPages — total number of pages
+// result.HasNextPage / result.HasPreviousPage — for UI navigation
+</code></pre>
+<hr>
+<h3 id="getpagedresponse-with-filter">GetPagedResponse (with filter)</h3>
+<p>Filters the collection using a predicate before paginating. <code>TotalItems</code> in the response reflects the count after filtering, not the full original collection size.</p>
+<pre><code class="lang-csharp">var result = helper.GetPagedResponse(
+    predicate: u =&gt; u.IsActive,
+    pageNumber: 1,
+    pageSize: 10
+);
+</code></pre>
+<hr>
+<h3 id="getpagedresponse-with-sort">GetPagedResponse (with sort)</h3>
+<p>Sorts the collection by a given key, then paginates. Pass <code>descending: true</code> to reverse the order (newest first, Z-A, etc.).</p>
+<pre><code class="lang-csharp">var result = helper.GetPagedResponse(
+    keySelector: u =&gt; u.CreatedAt,
+    pageNumber: 1,
+    pageSize: 10,
+    descending: true // newest users first
+);
+</code></pre>
+<hr>
+<h2 id="paginationrequest">PaginationRequest</h2>
+<p>If you're accepting pagination parameters from an API request, bind them into a <code>PaginationRequest</code> and call <code>Validate()</code> before use. It enforces safe boundaries — any <code>PageNumber</code> below 1 snaps to 1, any <code>PageSize</code> above 100 is capped at 100.</p>
+<pre><code class="lang-csharp">public IActionResult GetUsers([FromQuery] PaginationRequest req)
+{
+    req.Validate(); // enforces minimum/maximum bounds
+    var result = helper.GetPagedResponse(req.PageNumber, req.PageSize);
+    return Ok(result);
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PageNumber</code></td>
+<td><code>1</code></td>
+<td>Minimum: 1</td>
+</tr>
+<tr>
+<td><code>PageSize</code></td>
+<td><code>10</code></td>
+<td>Minimum: 1, Maximum: 100</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="paginatedresponse-properties">PaginatedResponse Properties</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Data</code></td>
+<td><code>List&lt;T&gt;</code></td>
+<td>Items on the current page</td>
+</tr>
+<tr>
+<td><code>CurrentPage</code></td>
+<td><code>int</code></td>
+<td>The page number returned</td>
+</tr>
+<tr>
+<td><code>PageSize</code></td>
+<td><code>int</code></td>
+<td>Items per page</td>
+</tr>
+<tr>
+<td><code>TotalItems</code></td>
+<td><code>int</code></td>
+<td>Total dataset size (post-filter if applicable)</td>
+</tr>
+<tr>
+<td><code>TotalPages</code></td>
+<td><code>int</code></td>
+<td>Total number of pages</td>
+</tr>
+<tr>
+<td><code>HasNextPage</code></td>
+<td><code>bool</code></td>
+<td><code>true</code> if there's a page after this one</td>
+</tr>
+<tr>
+<td><code>HasPreviousPage</code></td>
+<td><code>bool</code></td>
+<td><code>true</code> if there's a page before this one</td>
+</tr>
+<tr>
+<td><code>NextPage</code></td>
+<td><code>int?</code></td>
+<td>Next page number, or <code>null</code> if on the last page</td>
+</tr>
+<tr>
+<td><code>PreviousPage</code></td>
+<td><code>int?</code></td>
+<td>Previous page number, or <code>null</code> if on the first page</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/Pagination/Pagination.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

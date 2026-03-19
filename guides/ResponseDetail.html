@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>ResponseDetail | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="ResponseDetail | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/ResponseDetail.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0  |  <a href="../CHANGELOG.html">Changelog</a></p>
+</blockquote>
+<h1 id="responsedetail">ResponseDetail</h1>
+<p><code>ResponseDetail&lt;T&gt;</code> is a generic response wrapper that can be used by almost any service methods or controller. This way, you always have a consistent structure to handle, regardless of whether an operation succeeded or failed.</p>
+<h2 id="what-it-looks-like">What It Looks Like</h2>
+<pre><code class="lang-json">{
+  &quot;isSuccess&quot;: true,
+  &quot;message&quot;: &quot;Operation completed successfully&quot;,
+  &quot;statusCode&quot;: 200,
+  &quot;data&quot;: { ... }
+}
+</code></pre>
+<p>Or on failure:</p>
+<pre><code class="lang-json">{
+  &quot;isSuccess&quot;: false,
+  &quot;message&quot;: &quot;Token is invalid or expired&quot;,
+  &quot;statusCode&quot;: 400,
+  &quot;error&quot;: &quot;Signature mismatch: ...&quot;
+}
+</code></pre>
+<p>The <code>error</code> and pagination fields (<code>totalCount</code>, <code>totalPages</code>, <code>pageNumber</code>) are omitted from JSON output entirely when they're null — so responses stay clean and minimal.</p>
+<hr>
+<h2 id="using-it-in-your-controllers">Using It in Your Controllers</h2>
+<p>Rather than building response objects manually, use the built-in static factory methods:</p>
+<h3 id="successful">Successful</h3>
+<p>Returns a 200 success response with data.</p>
+<pre><code class="lang-csharp">return Ok(ResponseDetail&lt;UserDto&gt;.Successful(userDto));
+
+// With custom message and status code:
+return Ok(ResponseDetail&lt;UserDto&gt;.Successful(userDto, &quot;User created&quot;, 201));
+</code></pre>
+<h3 id="successfulpaginatedresponse">SuccessfulPaginatedResponse</h3>
+<p>Returns a 200 response for paginated results, including total counts and page info.</p>
+<pre><code class="lang-csharp">return Ok(ResponseDetail&lt;List&lt;UserDto&gt;&gt;.SuccessfulPaginatedResponse(
+    data: pagedUsers,
+    totalCount: 150,
+    totalPages: 15,
+    pageNumber: 1
+));
+</code></pre>
+<h3 id="failed">Failed</h3>
+<p>Returns a failure response with no data. Default status code is 400.</p>
+<pre><code class="lang-csharp">return BadRequest(ResponseDetail&lt;object&gt;.Failed(&quot;Invalid email format&quot;));
+
+// With a specific status code and error detail:
+return StatusCode(500, ResponseDetail&lt;object&gt;.Failed(&quot;Server error&quot;, 500, ex.Message));
+</code></pre>
+<h3 id="failed-with-data">Failed (with data)</h3>
+<p>Sometimes a failed operation still needs to return partial data — for example, returning a partially completed object alongside an error message.</p>
+<pre><code class="lang-csharp">return BadRequest(ResponseDetail&lt;UserDto&gt;.Failed(partialResult, &quot;Verification pending&quot;, 400));
+</code></pre>
+<hr>
+<h2 id="property-reference">Property Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IsSuccess</code></td>
+<td><code>bool</code></td>
+<td>Whether the operation succeeded</td>
+</tr>
+<tr>
+<td><code>Message</code></td>
+<td><code>string</code></td>
+<td>Human-readable result description</td>
+</tr>
+<tr>
+<td><code>Data</code></td>
+<td><code>T?</code></td>
+<td>The returned data (null if failed with no data)</td>
+</tr>
+<tr>
+<td><code>StatusCode</code></td>
+<td><code>int</code></td>
+<td>HTTP status code</td>
+</tr>
+<tr>
+<td><code>Error</code></td>
+<td><code>string?</code></td>
+<td>Detailed error info — omitted from JSON when null</td>
+</tr>
+<tr>
+<td><code>TotalCount</code></td>
+<td><code>int?</code></td>
+<td>Total items available (pagination only)</td>
+</tr>
+<tr>
+<td><code>TotalPages</code></td>
+<td><code>int?</code></td>
+<td>Total pages (pagination only)</td>
+</tr>
+<tr>
+<td><code>PageNumber</code></td>
+<td><code>int?</code></td>
+<td>Current page (pagination only)</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/ResponseDetail.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>PaymentVerifyResponse — Full Class Reference | UtilityNGPKG Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="PaymentVerifyResponse — Full Class Reference | UtilityNGPKG Documentation ">
+      
+      
+      <link rel="icon" href="../../../../favicon.ico">
+      <link rel="stylesheet" href="../../../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../../../public/main.css">
+      <meta name="docfx:navrel" content="../../../../toc.html">
+      <meta name="docfx:tocrel" content="../../../toc.html">
+      
+      <meta name="docfx:rel" content="../../../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/PaymentGateway/Paystack/Models/PaymentVerifyResponse.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../../../index.html">
+            <img id="logo" class="svg" src="../../../../logo.svg" alt="UtilityNGPKG">
+            UtilityNGPKG
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+
+<blockquote>
+<p><strong>Version:</strong> v1.0.0</p>
+</blockquote>
+<h1 id="paymentverifyresponse--full-class-reference">PaymentVerifyResponse — Full Class Reference</h1>
+<p><code>PaymentVerifyResponse</code> and its nested classes represent the complete structure returned by <code>VerifyPaymentAsync</code> and <code>VerifyTransferAsync</code>. This page documents every class in the hierarchy.</p>
+<hr>
+<h2 id="paymentverifyresponse">PaymentVerifyResponse</h2>
+<p>The top-level response wrapper.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Status</code></td>
+<td><code>bool</code></td>
+<td>Whether the verify API call succeeded at the HTTP level. A <code>true</code> here does not mean the payment was successful — check <code>Data.Status</code>.</td>
+</tr>
+<tr>
+<td><code>Message</code></td>
+<td><code>string</code></td>
+<td>Paystack's response message</td>
+</tr>
+<tr>
+<td><code>Data</code></td>
+<td><code>PaymentVerificationData?</code></td>
+<td>Full transaction details — <code>null</code> if the call failed</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="paymentverificationdata">PaymentVerificationData</h2>
+<p>The core transaction data. This is where you'll find everything about what happened with the money.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Status</code></td>
+<td><code>string</code></td>
+<td>The payment outcome: <code>&quot;success&quot;</code>, <code>&quot;failed&quot;</code>, or <code>&quot;abandoned&quot;</code></td>
+</tr>
+<tr>
+<td><code>Reference</code></td>
+<td><code>string</code></td>
+<td>Use this to match the transaction to your database record</td>
+</tr>
+<tr>
+<td><code>Amount</code></td>
+<td><code>decimal</code></td>
+<td>Confirmed charge in major currency (already converted from Kobo)</td>
+</tr>
+<tr>
+<td><code>GatewayResponse</code></td>
+<td><code>string</code></td>
+<td>Human-readable result from the gateway, e.g. <code>&quot;Approved&quot;</code></td>
+</tr>
+<tr>
+<td><code>Domain</code></td>
+<td><code>string</code></td>
+<td><code>&quot;test&quot;</code> or <code>&quot;live&quot;</code></td>
+</tr>
+<tr>
+<td><code>Channel</code></td>
+<td><code>string</code></td>
+<td>How the user paid: <code>&quot;card&quot;</code>, <code>&quot;bank&quot;</code>, <code>&quot;ussd&quot;</code></td>
+</tr>
+<tr>
+<td><code>Currency</code></td>
+<td><code>string</code></td>
+<td>Currency code, e.g. <code>&quot;NGN&quot;</code></td>
+</tr>
+<tr>
+<td><code>Fees</code></td>
+<td><code>decimal</code></td>
+<td>Processing fees in major currency</td>
+</tr>
+<tr>
+<td><code>PaidAt</code></td>
+<td><code>DateTime?</code></td>
+<td>When the payment was completed</td>
+</tr>
+<tr>
+<td><code>CreatedAt</code></td>
+<td><code>DateTime?</code></td>
+<td>When the transaction was initiated</td>
+</tr>
+<tr>
+<td><code>TransferCode</code></td>
+<td><code>string?</code></td>
+<td>Only present on transfer verifications — the unique transfer code</td>
+</tr>
+<tr>
+<td><code>Reason</code></td>
+<td><code>string?</code></td>
+<td>Transfer reason — only present on transfer verifications</td>
+</tr>
+<tr>
+<td><code>Authorization</code></td>
+<td><code>AuthorizationData?</code></td>
+<td>Card token details — only present if <code>Channel</code> is <code>&quot;card&quot;</code></td>
+</tr>
+<tr>
+<td><code>Customer</code></td>
+<td><code>CustomerData?</code></td>
+<td>The Paystack customer record linked to this transaction</td>
+</tr>
+<tr>
+<td><code>Recipient</code></td>
+<td><code>RecipientTransferData?</code></td>
+<td>Recipient details — only present on transfer verifications</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="authorizationdata">AuthorizationData</h2>
+<p>Card authorization details returned for card-channel payments. Store <code>AuthorizationCode</code> if you plan to support recurring charges.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AuthorizationCode</code></td>
+<td><code>string</code></td>
+<td>Save this to initiate future charges on the same card without the user re-entering details</td>
+</tr>
+<tr>
+<td><code>Bin</code></td>
+<td><code>string</code></td>
+<td>First 6 digits of the card</td>
+</tr>
+<tr>
+<td><code>Last4</code></td>
+<td><code>string</code></td>
+<td>Last 4 digits of the card</td>
+</tr>
+<tr>
+<td><code>ExpMonth</code></td>
+<td><code>string</code></td>
+<td>Card expiry month</td>
+</tr>
+<tr>
+<td><code>ExpYear</code></td>
+<td><code>string</code></td>
+<td>Card expiry year</td>
+</tr>
+<tr>
+<td><code>CardType</code></td>
+<td><code>string</code></td>
+<td>e.g. <code>&quot;visa&quot;</code>, <code>&quot;mastercard&quot;</code></td>
+</tr>
+<tr>
+<td><code>Bank</code></td>
+<td><code>string</code></td>
+<td>Issuing bank of the card</td>
+</tr>
+<tr>
+<td><code>CountryCode</code></td>
+<td><code>string</code></td>
+<td>Country code of the card's origin</td>
+</tr>
+<tr>
+<td><code>Reusable</code></td>
+<td><code>bool</code></td>
+<td>Whether this authorization can be re-used for future recurring payments</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="customerdata">CustomerData</h2>
+<p>Basic Paystack customer record associated with the transaction.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>long</code></td>
+<td>Paystack's internal numeric ID for this customer</td>
+</tr>
+<tr>
+<td><code>Email</code></td>
+<td><code>string</code></td>
+<td>Customer's email address</td>
+</tr>
+<tr>
+<td><code>CustomerCode</code></td>
+<td><code>string</code></td>
+<td>Paystack's unique customer code (e.g. <code>&quot;CUS_xxxxxxxxxxxx&quot;</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="recipienttransferdata">RecipientTransferData</h2>
+<p>Populated only when verifying a transfer (payout). Contains details about who received the funds.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Id</code></td>
+<td><code>long</code></td>
+<td>Paystack's internal recipient ID</td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Recipient's full name</td>
+</tr>
+<tr>
+<td><code>RecipientCode</code></td>
+<td><code>string</code></td>
+<td>The Paystack recipient code</td>
+</tr>
+<tr>
+<td><code>Details</code></td>
+<td><code>RecipientDetails?</code></td>
+<td>Bank account details — see below</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="recipientdetails">RecipientDetails</h2>
+<p>Bank account information nested inside <code>RecipientTransferData.Details</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BankName</code></td>
+<td><code>string</code></td>
+<td>Name of the recipient's bank</td>
+</tr>
+<tr>
+<td><code>AccountNumber</code></td>
+<td><code>string</code></td>
+<td>Recipient's NUBAN account number</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/iv-tunate/UtilityNGPKG/blob/main/docs/guides/PaymentGateway/Paystack/Models/PaymentVerifyResponse.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

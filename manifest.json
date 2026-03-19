@@ -1,0 +1,478 @@
+{
+  "source_base_path": "/home/runner/work/UtilityNGPKG/UtilityNGPKG/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "CHANGELOG.md",
+      "output": {
+        ".html": {
+          "relative_path": "CHANGELOG.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "SECURITY.md",
+      "output": {
+        ".html": {
+          "relative_path": "SECURITY.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "contributing/contributing.md",
+      "output": {
+        ".html": {
+          "relative_path": "contributing/contributing.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "contributing/issues.md",
+      "output": {
+        ".html": {
+          "relative_path": "contributing/issues.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "contributing/pull-requests.md",
+      "output": {
+        ".html": {
+          "relative_path": "contributing/pull-requests.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "contributing/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "contributing/toc.html"
+        },
+        ".json": {
+          "relative_path": "contributing/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/ExternalApiIntegration.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/ExternalApiIntegration.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/FilePost/FilePost.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/FilePost/FilePost.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/FilePost/Models/CloudinaryCredentials.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/FilePost/Models/CloudinaryCredentials.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/FilePost/Models/UploadRequestBody.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/FilePost/Models/UploadRequestBody.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/FilePost/Models/UploadResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/FilePost/Models/UploadResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/KYC/KYC.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/KYC/KYC.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/KYC/YouVerify/Models/DocumentType.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/KYC/YouVerify/Models/DocumentType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/KYC/YouVerify/Models/YouVerifyCredentials.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/KYC/YouVerify/Models/YouVerifyCredentials.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/KYC/YouVerify/Models/YouVerifyErrorResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/KYC/YouVerify/Models/YouVerifyErrorResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/KYC/YouVerify/Models/YouVerifyKycDto.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/KYC/YouVerify/Models/YouVerifyKycDto.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/KYC/YouVerify/Models/YouVerifyResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/KYC/YouVerify/Models/YouVerifyResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/KYC/YouVerify/Models/YouVerifyWebhookEvent.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/KYC/YouVerify/Models/YouVerifyWebhookEvent.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/KYC/YouVerify/WebhookVerifier.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/KYC/YouVerify/WebhookVerifier.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Mailer/Mailer.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Mailer/Mailer.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Mailer/Models/MailRequestDTO.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Mailer/Models/MailRequestDTO.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Mailer/Models/MailResponseDTO.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Mailer/Models/MailResponseDTO.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Mailer/Models/NotificationMessages.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Mailer/Models/NotificationMessages.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Pagination/Models/PaginatedResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Pagination/Models/PaginatedResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Pagination/Models/PaginationRequest.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Pagination/Models/PaginationRequest.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Pagination/Pagination.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Pagination/Pagination.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/PaymentGateway.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/PaymentGateway.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/IPaystackService.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/IPaystackService.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/AccountResolveResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/AccountResolveResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/BankInfoResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/BankInfoResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/CreateRecipientResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/CreateRecipientResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/PaymentInitRequest.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/PaymentInitRequest.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/PaymentInitResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/PaymentInitResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/PaymentVerifyResponse.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/PaymentVerifyResponse.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/PaystackWebhookPayload.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/PaystackWebhookPayload.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/TransferRecipientModels.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/TransferRecipientModels.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/Models/WithdrawalModels.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/Models/WithdrawalModels.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/PaymentGateway/Paystack/PaystackWebhookVerifier.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/PaymentGateway/Paystack/PaystackWebhookVerifier.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/RegexValidations.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/RegexValidations.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/ResponseDetail.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/ResponseDetail.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Sanitizer.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Sanitizer.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/Tokenomics.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/Tokenomics.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "guides/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "guides/toc.html"
+        },
+        ".json": {
+          "relative_path": "guides/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
