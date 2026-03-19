@@ -29,11 +29,11 @@ using UtilityNGPKG;
 builder.Services.AddUtilityNGPKG();
 ```
 
-For detailed usage on each service, please view our [Documentation Site](docs/site/index.md) which contains step-by-step guides for all modules.
+For detailed usage on each service, please view our [Documentation Site]((https://iv-tunate.github.io/UtilityNGPKG)) which contains step-by-step guides for all modules.
 
 ## Documentation
 
-Full documentation is available in the `docs` folder. The documentation is built with [DocFX](https://dotnet.github.io/docfx/) for easy navigation.
+Full documentation is available in the `docs` folder or [here](https://iv-tunate.github.io/UtilityNGPKG).
 
 - [External API Integration](docs/guides/ExternalApiIntegration.md)
 - [File Uploads](docs/guides/FilePost/FilePost.md)
