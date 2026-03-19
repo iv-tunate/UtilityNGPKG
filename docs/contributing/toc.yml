@@ -1,0 +1,6 @@
+- name: Contributing Guide
+  href: contributing.md
+- name: Pull Requests
+  href: pull-requests.md
+- name: Issues
+  href: issues.md

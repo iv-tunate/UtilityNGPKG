@@ -1,0 +1,86 @@
+- name: API Integration
+  href: ExternalApiIntegration.md
+- name: File Upload 
+  items:
+    - name: Overview
+      href: FilePost/FilePost.md
+    - name: Cloudinary
+      items:
+        - name: CloudinaryCredentials
+          href: FilePost/Models/CloudinaryCredentials.md
+        - name: UploadRequestBody
+          href: FilePost/Models/UploadRequestBody.md
+        - name: UploadResponse
+          href: FilePost/Models/UploadResponse.md
+- name: KYC
+  items:
+    - name: Overview
+      href: KYC/KYC.md
+    - name: YouVerify
+      items:
+        - name: WebhookVerifier
+          href: KYC/YouVerify/WebhookVerifier.md
+        - name: YouVerifyKycDto
+          href: KYC/YouVerify/Models/YouVerifyKycDto.md
+        - name: DocumentType
+          href: KYC/YouVerify/Models/DocumentType.md
+        - name: YouVerifyCredentials
+          href: KYC/YouVerify/Models/YouVerifyCredentials.md
+        - name: YouVerifyResponse
+          href: KYC/YouVerify/Models/YouVerifyResponse.md
+        - name: YouVerifyWebhookEvent
+          href: KYC/YouVerify/Models/YouVerifyWebhookEvent.md
+        - name: YouVerifyErrorResponse
+          href: KYC/YouVerify/Models/YouVerifyErrorResponse.md
+- name: Mailer
+  items:
+    - name: Overview
+      href: Mailer/Mailer.md
+    - name: MailRequestDTO
+      href: Mailer/Models/MailRequestDTO.md
+    - name: MailResponseDTO
+      href: Mailer/Models/MailResponseDTO.md
+    - name: NotificationMessages
+      href: Mailer/Models/NotificationMessages.md
+- name: Pagination
+  items:
+    - name: Overview
+      href: Pagination/Pagination.md
+    - name: PaginationRequest
+      href: Pagination/Models/PaginationRequest.md
+    - name: PaginatedResponse
+      href: Pagination/Models/PaginatedResponse.md
+- name: Payment Gateway
+  items:
+    - name: Overview
+      href: PaymentGateway/PaymentGateway.md
+    - name: Paystack Payment Integration
+      items: 
+        - name: IPaystackService Methods
+          href: PaymentGateway/Paystack/IPaystackService.md
+        - name: PaystackWebhookVerifier
+          href: PaymentGateway/Paystack/PaystackWebhookVerifier.md
+        - name: PaymentInitRequest
+          href: PaymentGateway/Paystack/Models/PaymentInitRequest.md
+        - name: PaymentInitResponse
+          href: PaymentGateway/Paystack/Models/PaymentInitResponse.md
+        - name: PaymentVerifyResponse
+          href: PaymentGateway/Paystack/Models/PaymentVerifyResponse.md
+        - name: WithdrawalModels
+          href: PaymentGateway/Paystack/Models/WithdrawalModels.md
+        - name: TransferRecipientModels
+          href: PaymentGateway/Paystack/Models/TransferRecipientModels.md
+        - name: PaystackWebhookPayload
+          href: PaymentGateway/Paystack/Models/PaystackWebhookPayload.md
+        - name: AccountResolveResponse
+          href: PaymentGateway/Paystack/Models/AccountResolveResponse.md
+        - name: BankInfoResponse
+          href: PaymentGateway/Paystack/Models/BankInfoResponse.md
+        - name: CreateRecipientResponse
+          href: PaymentGateway/Paystack/Models/CreateRecipientResponse.md
+- name: Sanitizer
+  href: Sanitizer.md
+- name: Tokenomics
+  href: Tokenomics.md
+- name: Response Detail
+  href: ResponseDetail.md
