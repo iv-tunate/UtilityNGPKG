@@ -29,7 +29,7 @@ using UtilityNGPKG;
 builder.Services.AddUtilityNGPKG();
 ```
 
-For detailed usage on each service, please view our [Documentation Site]((https://iv-tunate.github.io/UtilityNGPKG)) which contains step-by-step guides for all modules.
+For detailed usage on each service, check out our [Documentation Site]((https://iv-tunate.github.io/UtilityNGPKG)) which contains step-by-step guides for all modules.
 
 ## Documentation
 
